@@ -1,0 +1,5838 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2025-06-13T00:40:40Z"
+    generateName: v4m-es-exporter-5cc7fc6b57-
+    labels:
+      app.kubernetes.io/instance: es-exporter
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: prometheus-elasticsearch-exporter
+      app.kubernetes.io/version: v1.8.0
+      helm.sh/chart: prometheus-elasticsearch-exporter-6.6.1
+      pod-template-hash: 5cc7fc6b57
+      searchbackend: opensearch
+    name: v4m-es-exporter-5cc7fc6b57-zphx5
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: v4m-es-exporter-5cc7fc6b57
+      uid: 651563a9-d82a-4e1d-aa98-ce447a444fee
+    resourceVersion: "70016775"
+    uid: e3963a17-6076-4699-b008-b1131b52c06e
+  spec:
+    containers:
+    - command:
+      - elasticsearch_exporter
+      - --log.format=json
+      - --log.level=info
+      - --es.uri=https://$(ES_USER):$(ES_PASSWORD)@v4m-search:9200
+      - --es.all
+      - --es.indices
+      - --es.indices_settings
+      - --es.indices_mappings
+      - --es.shards
+      - --collector.snapshots
+      - --es.timeout=30s
+      - --es.ssl-skip-verify
+      - --web.listen-address=:9108
+      - --web.telemetry-path=/metrics
+      env:
+      - name: ES_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-metricgetter
+      - name: ES_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-metricgetter
+      image: quay.io/prometheuscommunity/elasticsearch-exporter:v1.8.0
+      imagePullPolicy: IfNotPresent
+      lifecycle:
+        preStop:
+          exec:
+            command:
+            - /bin/sleep
+            - "20"
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: http
+          scheme: HTTP
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 5
+      name: exporter
+      ports:
+      - containerPort: 9108
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /healthz
+          port: http
+          scheme: HTTP
+        initialDelaySeconds: 1
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 5
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-77fs6
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: aks-dvmsssypto01-16550377-vmss00000c
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: default
+    serviceAccountName: default
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    volumes:
+    - name: kube-api-access-77fs6
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:41:23Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:40Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:41:24Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:41:24Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:40Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://f9c79c220df7173af2907d71d1e174559fed8b98cdaa137e97883a7b47964daf
+      image: quay.io/prometheuscommunity/elasticsearch-exporter:v1.8.0
+      imageID: quay.io/prometheuscommunity/elasticsearch-exporter@sha256:073dd360de2c9d2a13b00e22793b2d2b06f5245e029bdce76d8f80da731a2faa
+      lastState: {}
+      name: exporter
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-13T00:41:22Z"
+    hostIP: 10.73.111.134
+    hostIPs:
+    - ip: 10.73.111.134
+    phase: Running
+    podIP: 10.244.1.27
+    podIPs:
+    - ip: 10.244.1.27
+    qosClass: Burstable
+    startTime: "2025-06-13T00:40:40Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      fluentbit.io/parser: fluentbit
+      kubectl.kubernetes.io/restartedAt: "2025-04-21T05:50:00Z"
+    creationTimestamp: "2025-05-23T02:16:37Z"
+    generateName: v4m-fb-
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/name: fluent-bit
+      controller-revision-hash: 5dbd85b6dd
+      fbout: es
+      pod-template-generation: "3"
+    name: v4m-fb-b8vbq
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: v4m-fb
+      uid: 0a1cd332-eae4-4373-b6e3-d241e9f49533
+    resourceVersion: "52044338"
+    uid: 0c4afdf1-76a1-4a16-bb56-868af419431e
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - aks-dvmsscspto01-16171445-vmss000009
+    automountServiceAccountToken: true
+    containers:
+    - args:
+      - --workdir=/fluent-bit/etc
+      - --config=/fluent-bit/etc/conf/fluent-bit.conf
+      command:
+      - /fluent-bit/bin/fluent-bit
+      env:
+      - name: ES_LOGCOLLECTOR_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-logcollector
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      envFrom:
+      - configMapRef:
+          name: fb-env-vars
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: fluent-bit
+      ports:
+      - containerPort: 2020
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/v1/health
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsUser: 3301
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /fluent-bit/etc/conf
+        name: config
+      - mountPath: /var/log
+        name: varlog
+      - mountPath: /var/lib/docker/containers
+        name: varlibdockercontainers
+        readOnly: true
+      - mountPath: /etc/machine-id
+        name: etcmachineid
+        readOnly: true
+      - mountPath: /fluent-bit/etc/viya-parsers.conf
+        name: parsers-config
+        subPath: viya-parsers.conf
+      - mountPath: /fluent-bit/etc/viya-tracing.conf
+        name: tracing-config
+        subPath: viya-tracing.conf
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-q74l7
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - ./usr/bin/migrate_fbstate_db.sh
+      image: docker.io/library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: chowner-v4m-fb-storage
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add:
+          - CHOWN
+          drop:
+          - all
+        privileged: true
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /usr/bin/migrate_fbstate_db.sh
+        name: dbmigrate-script
+        subPath: migrate_fbstate_db.sh
+      - mountPath: /var/log
+        name: varlog
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-q74l7
+        readOnly: true
+    nodeName: aks-dvmsscspto01-16171445-vmss000009
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-fb
+    serviceAccountName: v4m-fb
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: fb-fluent-bit-config
+      name: config
+    - hostPath:
+        path: /var/log
+        type: ""
+      name: varlog
+    - hostPath:
+        path: /var/lib/docker/containers
+        type: ""
+      name: varlibdockercontainers
+    - hostPath:
+        path: /etc/machine-id
+        type: File
+      name: etcmachineid
+    - hostPath:
+        path: /var/log/v4m-fb-storage
+        type: DirectoryOrCreate
+      name: v4m-fb-storage
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-parsers
+      name: parsers-config
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-tracing
+      name: tracing-config
+    - configMap:
+        defaultMode: 493
+        name: fb-dbmigrate-script
+      name: dbmigrate-script
+    - name: kube-api-access-q74l7
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:16:40Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:16:46Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:17:50Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:17:50Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:16:37Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://20a454db5869161814b0f7633dd866158f0bf5810e0595c43e6383ee3fff37bb
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imageID: cr.fluentbit.io/fluent/fluent-bit@sha256:991cb1153088891539769aaa1dc9dc0491e8d70caa916d273853bfce824b3822
+      lastState:
+        terminated:
+          containerID: containerd://7ca9b21f8a29fa000df919b9e4de10536cb9a56fc02eec02ded32c02a3f5195e
+          exitCode: 0
+          finishedAt: "2025-05-23T02:17:46Z"
+          reason: Completed
+          startedAt: "2025-05-23T02:16:52Z"
+      name: fluent-bit
+      ready: true
+      restartCount: 1
+      started: true
+      state:
+        running:
+          startedAt: "2025-05-23T02:17:50Z"
+    hostIP: 10.73.111.138
+    hostIPs:
+    - ip: 10.73.111.138
+    initContainerStatuses:
+    - containerID: containerd://4ed2b61ca4b69cdd6426567a3c61c17ff84840e28d9ed1e225f985d1da6fb6f1
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:ce4f0c0a6e67a3a1469e7a8e1fe781f64ba7c652823fdf2d5eac677dd4d095d6
+      lastState: {}
+      name: chowner-v4m-fb-storage
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://4ed2b61ca4b69cdd6426567a3c61c17ff84840e28d9ed1e225f985d1da6fb6f1
+          exitCode: 0
+          finishedAt: "2025-05-23T02:16:40Z"
+          reason: Completed
+          startedAt: "2025-05-23T02:16:40Z"
+    phase: Running
+    podIP: 10.244.13.3
+    podIPs:
+    - ip: 10.244.13.3
+    qosClass: Burstable
+    startTime: "2025-05-23T02:16:37Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      fluentbit.io/parser: fluentbit
+      kubectl.kubernetes.io/restartedAt: "2025-04-21T05:50:00Z"
+    creationTimestamp: "2025-05-23T02:13:29Z"
+    generateName: v4m-fb-
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/name: fluent-bit
+      controller-revision-hash: 5dbd85b6dd
+      fbout: es
+      pod-template-generation: "3"
+    name: v4m-fb-cf4bs
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: v4m-fb
+      uid: 0a1cd332-eae4-4373-b6e3-d241e9f49533
+    resourceVersion: "52043142"
+    uid: cd51648f-dfef-4309-9ab1-f5d007ab9ff0
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - aks-dvmsscspto01-16171445-vmss000008
+    automountServiceAccountToken: true
+    containers:
+    - args:
+      - --workdir=/fluent-bit/etc
+      - --config=/fluent-bit/etc/conf/fluent-bit.conf
+      command:
+      - /fluent-bit/bin/fluent-bit
+      env:
+      - name: ES_LOGCOLLECTOR_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-logcollector
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      envFrom:
+      - configMapRef:
+          name: fb-env-vars
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: fluent-bit
+      ports:
+      - containerPort: 2020
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/v1/health
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsUser: 3301
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /fluent-bit/etc/conf
+        name: config
+      - mountPath: /var/log
+        name: varlog
+      - mountPath: /var/lib/docker/containers
+        name: varlibdockercontainers
+        readOnly: true
+      - mountPath: /etc/machine-id
+        name: etcmachineid
+        readOnly: true
+      - mountPath: /fluent-bit/etc/viya-parsers.conf
+        name: parsers-config
+        subPath: viya-parsers.conf
+      - mountPath: /fluent-bit/etc/viya-tracing.conf
+        name: tracing-config
+        subPath: viya-tracing.conf
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-vgfj5
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - ./usr/bin/migrate_fbstate_db.sh
+      image: docker.io/library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: chowner-v4m-fb-storage
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add:
+          - CHOWN
+          drop:
+          - all
+        privileged: true
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /usr/bin/migrate_fbstate_db.sh
+        name: dbmigrate-script
+        subPath: migrate_fbstate_db.sh
+      - mountPath: /var/log
+        name: varlog
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-vgfj5
+        readOnly: true
+    nodeName: aks-dvmsscspto01-16171445-vmss000008
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-fb
+    serviceAccountName: v4m-fb
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: fb-fluent-bit-config
+      name: config
+    - hostPath:
+        path: /var/log
+        type: ""
+      name: varlog
+    - hostPath:
+        path: /var/lib/docker/containers
+        type: ""
+      name: varlibdockercontainers
+    - hostPath:
+        path: /etc/machine-id
+        type: File
+      name: etcmachineid
+    - hostPath:
+        path: /var/log/v4m-fb-storage
+        type: DirectoryOrCreate
+      name: v4m-fb-storage
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-parsers
+      name: parsers-config
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-tracing
+      name: tracing-config
+    - configMap:
+        defaultMode: 493
+        name: fb-dbmigrate-script
+      name: dbmigrate-script
+    - name: kube-api-access-vgfj5
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:13:33Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:13:38Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:16:08Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:16:08Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:13:29Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://019080383f938b111c36473a26d24fd4f7f39878972c21b8753acb9ea5fbd09c
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imageID: cr.fluentbit.io/fluent/fluent-bit@sha256:991cb1153088891539769aaa1dc9dc0491e8d70caa916d273853bfce824b3822
+      lastState:
+        terminated:
+          containerID: containerd://4bb6ef28cff63b96af91f25d51d61b5922e34c449d7b3b9133959869c94fd51e
+          exitCode: 0
+          finishedAt: "2025-05-23T02:15:40Z"
+          reason: Completed
+          startedAt: "2025-05-23T02:14:45Z"
+      name: fluent-bit
+      ready: true
+      restartCount: 2
+      started: true
+      state:
+        running:
+          startedAt: "2025-05-23T02:16:07Z"
+    hostIP: 10.73.111.140
+    hostIPs:
+    - ip: 10.73.111.140
+    initContainerStatuses:
+    - containerID: containerd://7e50fe1dc66a49eb40da75a89ce86ac9edeacefba454bf8c1820315a56a9b592
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:ce4f0c0a6e67a3a1469e7a8e1fe781f64ba7c652823fdf2d5eac677dd4d095d6
+      lastState: {}
+      name: chowner-v4m-fb-storage
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://7e50fe1dc66a49eb40da75a89ce86ac9edeacefba454bf8c1820315a56a9b592
+          exitCode: 0
+          finishedAt: "2025-05-23T02:13:32Z"
+          reason: Completed
+          startedAt: "2025-05-23T02:13:32Z"
+    phase: Running
+    podIP: 10.244.12.3
+    podIPs:
+    - ip: 10.244.12.3
+    qosClass: Burstable
+    startTime: "2025-05-23T02:13:29Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: 061bffe593a253346d43955cf0717e672b956594fd199501866ab4ade1a5ec49
+    creationTimestamp: "2025-06-13T00:40:37Z"
+    generateName: v4m-fb-events-5c7c4b886f-
+    labels:
+      app.kubernetes.io/instance: v4m-fb-events
+      app.kubernetes.io/name: fluent-bit
+      pod-template-hash: 5c7c4b886f
+    name: v4m-fb-events-5c7c4b886f-wgldg
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: v4m-fb-events-5c7c4b886f
+      uid: a825c776-ba1e-44b8-aeb4-85df493d4202
+    resourceVersion: "70015645"
+    uid: 4364cffa-9592-43a7-bdf7-d7d134817336
+  spec:
+    automountServiceAccountToken: true
+    containers:
+    - args:
+      - --workdir=/fluent-bit/etc
+      - --config=/fluent-bit/etc/conf/fluent-bit.conf
+      command:
+      - /fluent-bit/bin/fluent-bit
+      env:
+      - name: ES_LOGCOLLECTOR_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-logcollector
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: fluent-bit
+      ports:
+      - containerPort: 2020
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/v1/health
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        requests:
+          cpu: 70m
+          memory: 64Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1001
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /fluent-bit/etc/conf
+        name: config
+      - mountPath: /tmp/v4m
+        name: fb-events-db
+        subPath: v4m_fb_events.db
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-n2pmz
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: aks-dvmsssypto01-16550377-vmss00000c
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-fb-events
+    serviceAccountName: v4m-fb-events
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: v4m-fb-events
+      name: config
+    - emptyDir: {}
+      name: fb-events-db
+    - name: kube-api-access-n2pmz
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:40Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:37Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:40Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:40Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:37Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://f37dc2abcaa4b5e4fd92609904b18df757c59f1e1a43a46ece1f04cceeb539e9
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imageID: cr.fluentbit.io/fluent/fluent-bit@sha256:991cb1153088891539769aaa1dc9dc0491e8d70caa916d273853bfce824b3822
+      lastState: {}
+      name: fluent-bit
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-13T00:40:40Z"
+    hostIP: 10.73.111.134
+    hostIPs:
+    - ip: 10.73.111.134
+    phase: Running
+    podIP: 10.244.1.13
+    podIPs:
+    - ip: 10.244.1.13
+    qosClass: Burstable
+    startTime: "2025-06-13T00:40:37Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      fluentbit.io/parser: fluentbit
+      kubectl.kubernetes.io/restartedAt: "2025-04-21T05:50:00Z"
+    creationTimestamp: "2025-05-23T02:53:20Z"
+    generateName: v4m-fb-
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/name: fluent-bit
+      controller-revision-hash: 5dbd85b6dd
+      fbout: es
+      pod-template-generation: "3"
+    name: v4m-fb-g85wc
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: v4m-fb
+      uid: 0a1cd332-eae4-4373-b6e3-d241e9f49533
+    resourceVersion: "52078023"
+    uid: 45ca0566-a692-480a-9b3f-835290a98965
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - aks-dvmsssfpto01-39090917-vmss000002
+    automountServiceAccountToken: true
+    containers:
+    - args:
+      - --workdir=/fluent-bit/etc
+      - --config=/fluent-bit/etc/conf/fluent-bit.conf
+      command:
+      - /fluent-bit/bin/fluent-bit
+      env:
+      - name: ES_LOGCOLLECTOR_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-logcollector
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      envFrom:
+      - configMapRef:
+          name: fb-env-vars
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: fluent-bit
+      ports:
+      - containerPort: 2020
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/v1/health
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsUser: 3301
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /fluent-bit/etc/conf
+        name: config
+      - mountPath: /var/log
+        name: varlog
+      - mountPath: /var/lib/docker/containers
+        name: varlibdockercontainers
+        readOnly: true
+      - mountPath: /etc/machine-id
+        name: etcmachineid
+        readOnly: true
+      - mountPath: /fluent-bit/etc/viya-parsers.conf
+        name: parsers-config
+        subPath: viya-parsers.conf
+      - mountPath: /fluent-bit/etc/viya-tracing.conf
+        name: tracing-config
+        subPath: viya-tracing.conf
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-hft4v
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - ./usr/bin/migrate_fbstate_db.sh
+      image: docker.io/library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: chowner-v4m-fb-storage
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add:
+          - CHOWN
+          drop:
+          - all
+        privileged: true
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /usr/bin/migrate_fbstate_db.sh
+        name: dbmigrate-script
+        subPath: migrate_fbstate_db.sh
+      - mountPath: /var/log
+        name: varlog
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-hft4v
+        readOnly: true
+    nodeName: aks-dvmsssfpto01-39090917-vmss000002
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-fb
+    serviceAccountName: v4m-fb
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: fb-fluent-bit-config
+      name: config
+    - hostPath:
+        path: /var/log
+        type: ""
+      name: varlog
+    - hostPath:
+        path: /var/lib/docker/containers
+        type: ""
+      name: varlibdockercontainers
+    - hostPath:
+        path: /etc/machine-id
+        type: File
+      name: etcmachineid
+    - hostPath:
+        path: /var/log/v4m-fb-storage
+        type: DirectoryOrCreate
+      name: v4m-fb-storage
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-parsers
+      name: parsers-config
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-tracing
+      name: tracing-config
+    - configMap:
+        defaultMode: 493
+        name: fb-dbmigrate-script
+      name: dbmigrate-script
+    - name: kube-api-access-hft4v
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:53:33Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:53:33Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:55:28Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:55:28Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:53:20Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://270aabcaf6f6081e466c1469a748689c0f69fc3733e7463279eb441e2bfd5a5c
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imageID: cr.fluentbit.io/fluent/fluent-bit@sha256:991cb1153088891539769aaa1dc9dc0491e8d70caa916d273853bfce824b3822
+      lastState:
+        terminated:
+          containerID: containerd://a2e22ca4d75d1422d0eec66ef24bbed906986ae35aaf0d53626278effe068e12
+          exitCode: 0
+          finishedAt: "2025-05-23T02:55:27Z"
+          reason: Completed
+          startedAt: "2025-05-23T02:54:33Z"
+      name: fluent-bit
+      ready: true
+      restartCount: 2
+      started: true
+      state:
+        running:
+          startedAt: "2025-05-23T02:55:27Z"
+    hostIP: 10.73.111.139
+    hostIPs:
+    - ip: 10.73.111.139
+    initContainerStatuses:
+    - containerID: containerd://2ad34c5b6eb6256b3411a737ffcaf6d1570da7d868f056be7d7f9c83cb32f61f
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:ce4f0c0a6e67a3a1469e7a8e1fe781f64ba7c652823fdf2d5eac677dd4d095d6
+      lastState: {}
+      name: chowner-v4m-fb-storage
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://2ad34c5b6eb6256b3411a737ffcaf6d1570da7d868f056be7d7f9c83cb32f61f
+          exitCode: 0
+          finishedAt: "2025-05-23T02:53:32Z"
+          reason: Completed
+          startedAt: "2025-05-23T02:53:32Z"
+    phase: Running
+    podIP: 10.244.18.4
+    podIPs:
+    - ip: 10.244.18.4
+    qosClass: Burstable
+    startTime: "2025-05-23T02:53:22Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      fluentbit.io/parser: fluentbit
+      kubectl.kubernetes.io/restartedAt: "2025-04-21T05:50:00Z"
+    creationTimestamp: "2025-05-23T02:10:16Z"
+    generateName: v4m-fb-
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/name: fluent-bit
+      controller-revision-hash: 5dbd85b6dd
+      fbout: es
+      pod-template-generation: "3"
+    name: v4m-fb-lsg46
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: v4m-fb
+      uid: 0a1cd332-eae4-4373-b6e3-d241e9f49533
+    resourceVersion: "52039967"
+    uid: f07a3cd9-ea73-4c74-80dc-09f84379a8aa
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - aks-dvmsscspto01-16171445-vmss000007
+    automountServiceAccountToken: true
+    containers:
+    - args:
+      - --workdir=/fluent-bit/etc
+      - --config=/fluent-bit/etc/conf/fluent-bit.conf
+      command:
+      - /fluent-bit/bin/fluent-bit
+      env:
+      - name: ES_LOGCOLLECTOR_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-logcollector
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      envFrom:
+      - configMapRef:
+          name: fb-env-vars
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: fluent-bit
+      ports:
+      - containerPort: 2020
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/v1/health
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsUser: 3301
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /fluent-bit/etc/conf
+        name: config
+      - mountPath: /var/log
+        name: varlog
+      - mountPath: /var/lib/docker/containers
+        name: varlibdockercontainers
+        readOnly: true
+      - mountPath: /etc/machine-id
+        name: etcmachineid
+        readOnly: true
+      - mountPath: /fluent-bit/etc/viya-parsers.conf
+        name: parsers-config
+        subPath: viya-parsers.conf
+      - mountPath: /fluent-bit/etc/viya-tracing.conf
+        name: tracing-config
+        subPath: viya-tracing.conf
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-599kg
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - ./usr/bin/migrate_fbstate_db.sh
+      image: docker.io/library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: chowner-v4m-fb-storage
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add:
+          - CHOWN
+          drop:
+          - all
+        privileged: true
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /usr/bin/migrate_fbstate_db.sh
+        name: dbmigrate-script
+        subPath: migrate_fbstate_db.sh
+      - mountPath: /var/log
+        name: varlog
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-599kg
+        readOnly: true
+    nodeName: aks-dvmsscspto01-16171445-vmss000007
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-fb
+    serviceAccountName: v4m-fb
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: fb-fluent-bit-config
+      name: config
+    - hostPath:
+        path: /var/log
+        type: ""
+      name: varlog
+    - hostPath:
+        path: /var/lib/docker/containers
+        type: ""
+      name: varlibdockercontainers
+    - hostPath:
+        path: /etc/machine-id
+        type: File
+      name: etcmachineid
+    - hostPath:
+        path: /var/log/v4m-fb-storage
+        type: DirectoryOrCreate
+      name: v4m-fb-storage
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-parsers
+      name: parsers-config
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-tracing
+      name: tracing-config
+    - configMap:
+        defaultMode: 493
+        name: fb-dbmigrate-script
+      name: dbmigrate-script
+    - name: kube-api-access-599kg
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:10:20Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:10:26Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:11:18Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:11:18Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:10:16Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://cd56957cf1a781d1685be5fec6a0b09690576724164fee31b4c9462f63e4ab3a
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imageID: cr.fluentbit.io/fluent/fluent-bit@sha256:991cb1153088891539769aaa1dc9dc0491e8d70caa916d273853bfce824b3822
+      lastState:
+        terminated:
+          containerID: containerd://24decbb9683b58c1ad204d7d0755834186fe796426855b591da89ea2ecd771f4
+          exitCode: 0
+          finishedAt: "2025-05-23T02:11:17Z"
+          reason: Completed
+          startedAt: "2025-05-23T02:10:33Z"
+      name: fluent-bit
+      ready: true
+      restartCount: 1
+      started: true
+      state:
+        running:
+          startedAt: "2025-05-23T02:11:18Z"
+    hostIP: 10.73.111.137
+    hostIPs:
+    - ip: 10.73.111.137
+    initContainerStatuses:
+    - containerID: containerd://d55dc8e43a82b4638cb2f52a84c8a91fdf89256dce4818504260c12e8e8a9a4b
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:ce4f0c0a6e67a3a1469e7a8e1fe781f64ba7c652823fdf2d5eac677dd4d095d6
+      lastState: {}
+      name: chowner-v4m-fb-storage
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://d55dc8e43a82b4638cb2f52a84c8a91fdf89256dce4818504260c12e8e8a9a4b
+          exitCode: 0
+          finishedAt: "2025-05-23T02:10:20Z"
+          reason: Completed
+          startedAt: "2025-05-23T02:10:20Z"
+    phase: Running
+    podIP: 10.244.10.3
+    podIPs:
+    - ip: 10.244.10.3
+    qosClass: Burstable
+    startTime: "2025-05-23T02:10:16Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      fluentbit.io/parser: fluentbit
+      kubectl.kubernetes.io/restartedAt: "2025-04-21T05:50:00Z"
+    creationTimestamp: "2025-06-13T00:40:10Z"
+    generateName: v4m-fb-
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/name: fluent-bit
+      controller-revision-hash: 5dbd85b6dd
+      fbout: es
+      pod-template-generation: "3"
+    name: v4m-fb-mgvht
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: v4m-fb
+      uid: 0a1cd332-eae4-4373-b6e3-d241e9f49533
+    resourceVersion: "70017357"
+    uid: e7d7200c-d48b-4aca-9783-a61b1a104917
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - aks-dvmsssypto01-16550377-vmss00000d
+    automountServiceAccountToken: true
+    containers:
+    - args:
+      - --workdir=/fluent-bit/etc
+      - --config=/fluent-bit/etc/conf/fluent-bit.conf
+      command:
+      - /fluent-bit/bin/fluent-bit
+      env:
+      - name: ES_LOGCOLLECTOR_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-logcollector
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      envFrom:
+      - configMapRef:
+          name: fb-env-vars
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: fluent-bit
+      ports:
+      - containerPort: 2020
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/v1/health
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsUser: 3301
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /fluent-bit/etc/conf
+        name: config
+      - mountPath: /var/log
+        name: varlog
+      - mountPath: /var/lib/docker/containers
+        name: varlibdockercontainers
+        readOnly: true
+      - mountPath: /etc/machine-id
+        name: etcmachineid
+        readOnly: true
+      - mountPath: /fluent-bit/etc/viya-parsers.conf
+        name: parsers-config
+        subPath: viya-parsers.conf
+      - mountPath: /fluent-bit/etc/viya-tracing.conf
+        name: tracing-config
+        subPath: viya-tracing.conf
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-sgd2x
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - ./usr/bin/migrate_fbstate_db.sh
+      image: docker.io/library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: chowner-v4m-fb-storage
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add:
+          - CHOWN
+          drop:
+          - all
+        privileged: true
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /usr/bin/migrate_fbstate_db.sh
+        name: dbmigrate-script
+        subPath: migrate_fbstate_db.sh
+      - mountPath: /var/log
+        name: varlog
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-sgd2x
+        readOnly: true
+    nodeName: aks-dvmsssypto01-16550377-vmss00000d
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-fb
+    serviceAccountName: v4m-fb
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: fb-fluent-bit-config
+      name: config
+    - hostPath:
+        path: /var/log
+        type: ""
+      name: varlog
+    - hostPath:
+        path: /var/lib/docker/containers
+        type: ""
+      name: varlibdockercontainers
+    - hostPath:
+        path: /etc/machine-id
+        type: File
+      name: etcmachineid
+    - hostPath:
+        path: /var/log/v4m-fb-storage
+        type: DirectoryOrCreate
+      name: v4m-fb-storage
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-parsers
+      name: parsers-config
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-tracing
+      name: tracing-config
+    - configMap:
+        defaultMode: 493
+        name: fb-dbmigrate-script
+      name: dbmigrate-script
+    - name: kube-api-access-sgd2x
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:22Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:22Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:42:12Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:42:12Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:10Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://5491fe74b46b871f1ac7b9f3f39dc4d6d6f3abd8ff377ad04474aa9b0ddde1b0
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imageID: cr.fluentbit.io/fluent/fluent-bit@sha256:991cb1153088891539769aaa1dc9dc0491e8d70caa916d273853bfce824b3822
+      lastState:
+        terminated:
+          containerID: containerd://e4e149aa594be42cf11674758f6edf761dbbedcdef2ef2b8c1bb8cc9db2b99cd
+          exitCode: 0
+          finishedAt: "2025-06-13T00:42:12Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:41:18Z"
+      name: fluent-bit
+      ready: true
+      restartCount: 2
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-13T00:42:12Z"
+    hostIP: 10.73.111.136
+    hostIPs:
+    - ip: 10.73.111.136
+    initContainerStatuses:
+    - containerID: containerd://aaf3dcefe76aabed7fcd8d436ec2f358baed25d07130fee9c90a1955ffa14027
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:f85340bf132ae937d2c2a763b8335c9bab35d6e8293f70f606b9c6178d84f42b
+      lastState: {}
+      name: chowner-v4m-fb-storage
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://aaf3dcefe76aabed7fcd8d436ec2f358baed25d07130fee9c90a1955ffa14027
+          exitCode: 0
+          finishedAt: "2025-06-13T00:40:21Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:40:21Z"
+    phase: Running
+    podIP: 10.244.2.3
+    podIPs:
+    - ip: 10.244.2.3
+    qosClass: Burstable
+    startTime: "2025-06-13T00:40:10Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      fluentbit.io/parser: fluentbit
+      kubectl.kubernetes.io/restartedAt: "2025-04-21T05:50:00Z"
+    creationTimestamp: "2025-05-23T01:59:25Z"
+    generateName: v4m-fb-
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/name: fluent-bit
+      controller-revision-hash: 5dbd85b6dd
+      fbout: es
+      pod-template-generation: "3"
+    name: v4m-fb-nrt5p
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: v4m-fb
+      uid: 0a1cd332-eae4-4373-b6e3-d241e9f49533
+    resourceVersion: "52033076"
+    uid: 24256a2c-2891-4df7-b673-b3586969ae0d
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - aks-dvmsscupto01-24536590-vmss000006
+    automountServiceAccountToken: true
+    containers:
+    - args:
+      - --workdir=/fluent-bit/etc
+      - --config=/fluent-bit/etc/conf/fluent-bit.conf
+      command:
+      - /fluent-bit/bin/fluent-bit
+      env:
+      - name: ES_LOGCOLLECTOR_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-logcollector
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      envFrom:
+      - configMapRef:
+          name: fb-env-vars
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: fluent-bit
+      ports:
+      - containerPort: 2020
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/v1/health
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsUser: 3301
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /fluent-bit/etc/conf
+        name: config
+      - mountPath: /var/log
+        name: varlog
+      - mountPath: /var/lib/docker/containers
+        name: varlibdockercontainers
+        readOnly: true
+      - mountPath: /etc/machine-id
+        name: etcmachineid
+        readOnly: true
+      - mountPath: /fluent-bit/etc/viya-parsers.conf
+        name: parsers-config
+        subPath: viya-parsers.conf
+      - mountPath: /fluent-bit/etc/viya-tracing.conf
+        name: tracing-config
+        subPath: viya-tracing.conf
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-qdtpg
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - ./usr/bin/migrate_fbstate_db.sh
+      image: docker.io/library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: chowner-v4m-fb-storage
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add:
+          - CHOWN
+          drop:
+          - all
+        privileged: true
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /usr/bin/migrate_fbstate_db.sh
+        name: dbmigrate-script
+        subPath: migrate_fbstate_db.sh
+      - mountPath: /var/log
+        name: varlog
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-qdtpg
+        readOnly: true
+    nodeName: aks-dvmsscupto01-24536590-vmss000006
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-fb
+    serviceAccountName: v4m-fb
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: fb-fluent-bit-config
+      name: config
+    - hostPath:
+        path: /var/log
+        type: ""
+      name: varlog
+    - hostPath:
+        path: /var/lib/docker/containers
+        type: ""
+      name: varlibdockercontainers
+    - hostPath:
+        path: /etc/machine-id
+        type: File
+      name: etcmachineid
+    - hostPath:
+        path: /var/log/v4m-fb-storage
+        type: DirectoryOrCreate
+      name: v4m-fb-storage
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-parsers
+      name: parsers-config
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-tracing
+      name: tracing-config
+    - configMap:
+        defaultMode: 493
+        name: fb-dbmigrate-script
+      name: dbmigrate-script
+    - name: kube-api-access-qdtpg
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T01:59:38Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T01:59:38Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:00:43Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:00:43Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T01:59:25Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://8adf3b3cbf97b11e95f0cb883fd51326c048f338e734cb9a66abb43229d32639
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imageID: cr.fluentbit.io/fluent/fluent-bit@sha256:991cb1153088891539769aaa1dc9dc0491e8d70caa916d273853bfce824b3822
+      lastState:
+        terminated:
+          containerID: containerd://7dc16eb96cbf5d655d04be09d6eb8490a35a639adde4564b914581ab034fc297
+          exitCode: 137
+          finishedAt: "2025-05-23T02:00:41Z"
+          reason: Error
+          startedAt: "2025-05-23T01:59:42Z"
+      name: fluent-bit
+      ready: true
+      restartCount: 1
+      started: true
+      state:
+        running:
+          startedAt: "2025-05-23T02:00:42Z"
+    hostIP: 10.73.111.132
+    hostIPs:
+    - ip: 10.73.111.132
+    initContainerStatuses:
+    - containerID: containerd://6d53cc5de0ee758010bf43f2bd12349d2db20db25698c0e1320ad122cee501ec
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:ce4f0c0a6e67a3a1469e7a8e1fe781f64ba7c652823fdf2d5eac677dd4d095d6
+      lastState: {}
+      name: chowner-v4m-fb-storage
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://6d53cc5de0ee758010bf43f2bd12349d2db20db25698c0e1320ad122cee501ec
+          exitCode: 0
+          finishedAt: "2025-05-23T01:59:37Z"
+          reason: Completed
+          startedAt: "2025-05-23T01:59:37Z"
+    phase: Running
+    podIP: 10.244.7.2
+    podIPs:
+    - ip: 10.244.7.2
+    qosClass: Burstable
+    startTime: "2025-05-23T01:59:26Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      fluentbit.io/parser: fluentbit
+      kubectl.kubernetes.io/restartedAt: "2025-04-21T05:50:00Z"
+    creationTimestamp: "2025-05-23T02:26:13Z"
+    generateName: v4m-fb-
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/name: fluent-bit
+      controller-revision-hash: 5dbd85b6dd
+      fbout: es
+      pod-template-generation: "3"
+    name: v4m-fb-nwvl9
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: v4m-fb
+      uid: 0a1cd332-eae4-4373-b6e3-d241e9f49533
+    resourceVersion: "86043478"
+    uid: fd8fc7be-157b-46e1-bee1-5319935fb84d
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - aks-dvmssslpto01-17576862-vmss000006
+    automountServiceAccountToken: true
+    containers:
+    - args:
+      - --workdir=/fluent-bit/etc
+      - --config=/fluent-bit/etc/conf/fluent-bit.conf
+      command:
+      - /fluent-bit/bin/fluent-bit
+      env:
+      - name: ES_LOGCOLLECTOR_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-logcollector
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      envFrom:
+      - configMapRef:
+          name: fb-env-vars
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: fluent-bit
+      ports:
+      - containerPort: 2020
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/v1/health
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsUser: 3301
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /fluent-bit/etc/conf
+        name: config
+      - mountPath: /var/log
+        name: varlog
+      - mountPath: /var/lib/docker/containers
+        name: varlibdockercontainers
+        readOnly: true
+      - mountPath: /etc/machine-id
+        name: etcmachineid
+        readOnly: true
+      - mountPath: /fluent-bit/etc/viya-parsers.conf
+        name: parsers-config
+        subPath: viya-parsers.conf
+      - mountPath: /fluent-bit/etc/viya-tracing.conf
+        name: tracing-config
+        subPath: viya-tracing.conf
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-p4xq6
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - ./usr/bin/migrate_fbstate_db.sh
+      image: docker.io/library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: chowner-v4m-fb-storage
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add:
+          - CHOWN
+          drop:
+          - all
+        privileged: true
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /usr/bin/migrate_fbstate_db.sh
+        name: dbmigrate-script
+        subPath: migrate_fbstate_db.sh
+      - mountPath: /var/log
+        name: varlog
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-p4xq6
+        readOnly: true
+    nodeName: aks-dvmssslpto01-17576862-vmss000006
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-fb
+    serviceAccountName: v4m-fb
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: fb-fluent-bit-config
+      name: config
+    - hostPath:
+        path: /var/log
+        type: ""
+      name: varlog
+    - hostPath:
+        path: /var/lib/docker/containers
+        type: ""
+      name: varlibdockercontainers
+    - hostPath:
+        path: /etc/machine-id
+        type: File
+      name: etcmachineid
+    - hostPath:
+        path: /var/log/v4m-fb-storage
+        type: DirectoryOrCreate
+      name: v4m-fb-storage
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-parsers
+      name: parsers-config
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-tracing
+      name: tracing-config
+    - configMap:
+        defaultMode: 493
+        name: fb-dbmigrate-script
+      name: dbmigrate-script
+    - name: kube-api-access-p4xq6
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-01T04:35:44Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:26:25Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-01T04:35:53Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-07-01T04:35:53Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-05-23T02:26:13Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://aab5a0a434f8fe5295e85d9dc44ca8df6435cdebf7396e6c2171b5a794658c75
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imageID: cr.fluentbit.io/fluent/fluent-bit@sha256:991cb1153088891539769aaa1dc9dc0491e8d70caa916d273853bfce824b3822
+      lastState:
+        terminated:
+          containerID: containerd://14711752ce70c93b056a6f9a75f107f1dcb9ad431db773583cc3a1f1be407232
+          exitCode: 255
+          finishedAt: "2025-07-01T04:35:38Z"
+          reason: Unknown
+          startedAt: "2025-05-23T02:28:25Z"
+      name: fluent-bit
+      ready: true
+      restartCount: 3
+      started: true
+      state:
+        running:
+          startedAt: "2025-07-01T04:35:45Z"
+    hostIP: 10.73.111.135
+    hostIPs:
+    - ip: 10.73.111.135
+    initContainerStatuses:
+    - containerID: containerd://5f5f732a9acc699f6ada7d02cda853a5634800effe450ef73fff63bfcbbaa8fb
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:ce4f0c0a6e67a3a1469e7a8e1fe781f64ba7c652823fdf2d5eac677dd4d095d6
+      lastState: {}
+      name: chowner-v4m-fb-storage
+      ready: true
+      restartCount: 1
+      started: false
+      state:
+        terminated:
+          containerID: containerd://5f5f732a9acc699f6ada7d02cda853a5634800effe450ef73fff63bfcbbaa8fb
+          exitCode: 0
+          finishedAt: "2025-07-01T04:35:43Z"
+          reason: Completed
+          startedAt: "2025-07-01T04:35:43Z"
+    phase: Running
+    podIP: 10.244.15.221
+    podIPs:
+    - ip: 10.244.15.221
+    qosClass: Burstable
+    startTime: "2025-05-23T02:26:13Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      checksum/config: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      fluentbit.io/parser: fluentbit
+      kubectl.kubernetes.io/restartedAt: "2025-04-21T05:50:00Z"
+    creationTimestamp: "2025-06-13T00:32:15Z"
+    generateName: v4m-fb-
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/name: fluent-bit
+      controller-revision-hash: 5dbd85b6dd
+      fbout: es
+      pod-template-generation: "3"
+    name: v4m-fb-vppnx
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DaemonSet
+      name: v4m-fb
+      uid: 0a1cd332-eae4-4373-b6e3-d241e9f49533
+    resourceVersion: "70010405"
+    uid: a4e823c3-9d76-431f-bf46-eaf02ee323ad
+  spec:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchFields:
+            - key: metadata.name
+              operator: In
+              values:
+              - aks-dvmsssypto01-16550377-vmss00000c
+    automountServiceAccountToken: true
+    containers:
+    - args:
+      - --workdir=/fluent-bit/etc
+      - --config=/fluent-bit/etc/conf/fluent-bit.conf
+      command:
+      - /fluent-bit/bin/fluent-bit
+      env:
+      - name: ES_LOGCOLLECTOR_USER
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-logcollector
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      envFrom:
+      - configMapRef:
+          name: fb-env-vars
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      name: fluent-bit
+      ports:
+      - containerPort: 2020
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        httpGet:
+          path: /api/v1/health
+          port: http
+          scheme: HTTP
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsUser: 3301
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /fluent-bit/etc/conf
+        name: config
+      - mountPath: /var/log
+        name: varlog
+      - mountPath: /var/lib/docker/containers
+        name: varlibdockercontainers
+        readOnly: true
+      - mountPath: /etc/machine-id
+        name: etcmachineid
+        readOnly: true
+      - mountPath: /fluent-bit/etc/viya-parsers.conf
+        name: parsers-config
+        subPath: viya-parsers.conf
+      - mountPath: /fluent-bit/etc/viya-tracing.conf
+        name: tracing-config
+        subPath: viya-tracing.conf
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-s7wml
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - ./usr/bin/migrate_fbstate_db.sh
+      image: docker.io/library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: chowner-v4m-fb-storage
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: true
+        capabilities:
+          add:
+          - CHOWN
+          drop:
+          - all
+        privileged: true
+        readOnlyRootFilesystem: true
+        runAsNonRoot: false
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /var/log/v4m-fb-storage
+        name: v4m-fb-storage
+      - mountPath: /usr/bin/migrate_fbstate_db.sh
+        name: dbmigrate-script
+        subPath: migrate_fbstate_db.sh
+      - mountPath: /var/log
+        name: varlog
+        readOnly: true
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-s7wml
+        readOnly: true
+    nodeName: aks-dvmsssypto01-16550377-vmss00000c
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-fb
+    serviceAccountName: v4m-fb
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: fb-fluent-bit-config
+      name: config
+    - hostPath:
+        path: /var/log
+        type: ""
+      name: varlog
+    - hostPath:
+        path: /var/lib/docker/containers
+        type: ""
+      name: varlibdockercontainers
+    - hostPath:
+        path: /etc/machine-id
+        type: File
+      name: etcmachineid
+    - hostPath:
+        path: /var/log/v4m-fb-storage
+        type: DirectoryOrCreate
+      name: v4m-fb-storage
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-parsers
+      name: parsers-config
+    - configMap:
+        defaultMode: 420
+        name: fb-viya-tracing
+      name: tracing-config
+    - configMap:
+        defaultMode: 493
+        name: fb-dbmigrate-script
+      name: dbmigrate-script
+    - name: kube-api-access-s7wml
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:32:20Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:32:25Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:33:25Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:33:25Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:32:15Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://a6ee1fbe206be119698a89943da8bb3e41b98b131585851a64872ef9d15090a9
+      image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+      imageID: cr.fluentbit.io/fluent/fluent-bit@sha256:991cb1153088891539769aaa1dc9dc0491e8d70caa916d273853bfce824b3822
+      lastState:
+        terminated:
+          containerID: containerd://189979ae901f7d17d927491349be098608e080413e82067d53744d07a33efd8b
+          exitCode: 137
+          finishedAt: "2025-06-13T00:33:24Z"
+          reason: Error
+          startedAt: "2025-06-13T00:32:31Z"
+      name: fluent-bit
+      ready: true
+      restartCount: 1
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-13T00:33:24Z"
+    hostIP: 10.73.111.134
+    hostIPs:
+    - ip: 10.73.111.134
+    initContainerStatuses:
+    - containerID: containerd://26c9b579a47faf22aceae175313ea0784fbc4714c41597caa08e755c977847db
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:f85340bf132ae937d2c2a763b8335c9bab35d6e8293f70f606b9c6178d84f42b
+      lastState: {}
+      name: chowner-v4m-fb-storage
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://26c9b579a47faf22aceae175313ea0784fbc4714c41597caa08e755c977847db
+          exitCode: 0
+          finishedAt: "2025-06-13T00:32:19Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:32:19Z"
+    phase: Running
+    podIP: 10.244.1.4
+    podIPs:
+    - ip: 10.244.1.4
+    qosClass: Burstable
+    startTime: "2025-06-13T00:32:15Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      configchecksum: e9e917cce3857b0b5ba10364b3ef56eac5006e6b975d993ff23045b39f6f3f6
+    creationTimestamp: "2025-06-13T00:40:39Z"
+    generateName: v4m-osd-799db68467-
+    labels:
+      app.kubernetes.io/instance: v4m-osd
+      app.kubernetes.io/name: opensearch-dashboards
+      pod-template-hash: 799db68467
+    name: v4m-osd-799db68467-qtnzq
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: v4m-osd-799db68467
+      uid: 085e9cbb-d613-463f-a9eb-412ea297e8ce
+    resourceVersion: "70017429"
+    uid: d5bc2b80-459c-4921-a2b0-0d38d355c9e2
+  spec:
+    containers:
+    - env:
+      - name: OPENSEARCH_HOSTS
+        value: https://v4m-search:9200
+      - name: SERVER_HOST
+        value: 0.0.0.0
+      - name: SERVER_BASEPATH
+        value: /dashboards
+      - name: OSD_ENABLE_TLS
+        valueFrom:
+          secretKeyRef:
+            key: enable_tls
+            name: v4m-osd-tls-enabled
+      - name: OPENSEARCH_USERNAME
+        valueFrom:
+          secretKeyRef:
+            key: username
+            name: internal-user-kibanaserver
+      - name: OPENSEARCH_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-kibanaserver
+      image: docker.io/opensearchproject/opensearch-dashboards:2.19.1
+      imagePullPolicy: IfNotPresent
+      livenessProbe:
+        failureThreshold: 10
+        initialDelaySeconds: 10
+        periodSeconds: 20
+        successThreshold: 1
+        tcpSocket:
+          port: 5601
+        timeoutSeconds: 5
+      name: dashboards
+      ports:
+      - containerPort: 5601
+        name: http
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 10
+        initialDelaySeconds: 10
+        periodSeconds: 20
+        successThreshold: 1
+        tcpSocket:
+          port: 5601
+        timeoutSeconds: 5
+      resources:
+        limits:
+          cpu: 100m
+          memory: 512M
+        requests:
+          cpu: 100m
+          memory: 512M
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+      startupProbe:
+        failureThreshold: 20
+        initialDelaySeconds: 10
+        periodSeconds: 10
+        successThreshold: 1
+        tcpSocket:
+          port: 5601
+        timeoutSeconds: 5
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
+        name: config
+        subPath: opensearch_dashboards.yml
+      - mountPath: /usr/share/opensearchdashboards/certs/kibana-crt.pem
+        name: kibana-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearchdashboards/certs/kibana-key.pem
+        name: kibana-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearchdashboards/certs/kibana-root-ca.pem
+        name: kibana-certs
+        subPath: ca.crt
+      - mountPath: /usr/share/opensearch-dashboards/data/
+        name: uuid-file
+        subPath: uuid
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: aks-dvmsssypto01-16550377-vmss00000c
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: v4m-osd-dashboards
+    serviceAccountName: v4m-osd-dashboards
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    volumes:
+    - configMap:
+        defaultMode: 420
+        name: v4m-osd-config
+      name: config
+    - name: kibana-certs
+      secret:
+        defaultMode: 420
+        secretName: kibana-tls-secret
+    - emptyDir: {}
+      name: uuid-file
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:41:19Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:39Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:42:20Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:42:20Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:39Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://02d2830df407f620f3fb733493c8b613b5ed5683808827bf1602be4672934856
+      image: docker.io/opensearchproject/opensearch-dashboards:2.19.1
+      imageID: docker.io/opensearchproject/opensearch-dashboards@sha256:70fb0a6563f204f391c444329287ce7ac50dbb7b99a43307c047de1fcfb9c658
+      lastState: {}
+      name: dashboards
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-13T00:41:18Z"
+    hostIP: 10.73.111.134
+    hostIPs:
+    - ip: 10.73.111.134
+    phase: Running
+    podIP: 10.244.1.21
+    podIPs:
+    - ip: 10.244.1.21
+    qosClass: Guaranteed
+    startTime: "2025-06-13T00:40:39Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      configchecksum: f399e99588c9daef1bae593b985284f9348989939ce76dcbac0c1f3d9336b81
+      fluentbit.io/parser: elasticsearch
+    creationTimestamp: "2025-06-13T00:41:49Z"
+    generateName: v4m-search-
+    labels:
+      app.kubernetes.io/component: v4m-search
+      app.kubernetes.io/instance: opensearch
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: opensearch
+      app.kubernetes.io/version: 2.19.1
+      apps.kubernetes.io/pod-index: "0"
+      controller-revision-hash: v4m-search-5bb6999c7
+      helm.sh/chart: opensearch-2.32.0
+      statefulset.kubernetes.io/pod-name: v4m-search-0
+    name: v4m-search-0
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: StatefulSet
+      name: v4m-search
+      uid: de70b6f5-85d4-4a27-8acb-c249670283b3
+    resourceVersion: "70021763"
+    uid: 1b1567f6-ce70-4761-9ad8-169be42b15d0
+  spec:
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - opensearch
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - opensearch
+            topologyKey: kubernetes.io/hostname
+          weight: 1
+    automountServiceAccountToken: false
+    containers:
+    - env:
+      - name: node.name
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: cluster.initial_master_nodes
+        value: v4m-search-0,v4m-search-1,v4m-search-2,
+      - name: discovery.seed_hosts
+        value: v4m-search-headless
+      - name: cluster.name
+        value: opensearch-cluster
+      - name: network.host
+        value: 0.0.0.0
+      - name: OPENSEARCH_JAVA_OPTS
+        value: -Xms4096m -Xmx4096m
+      - name: node.roles
+        value: master,ingest,data,
+      - name: DISABLE_INSTALL_DEMO_CONFIG
+        value: "true"
+      - name: ES_ADMIN_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-admin
+      - name: ES_KIBANASERVER_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-kibanaserver
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      - name: ES_METRICGETTER_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-metricgetter
+      - name: OPENSEARCH_NODE_DN
+        valueFrom:
+          secretKeyRef:
+            key: node_dn
+            name: opensearch-cert-subjects
+      - name: OPENSEARCH_ADMIN_DN
+        valueFrom:
+          secretKeyRef:
+            key: admin_dn
+            name: opensearch-cert-subjects
+      - name: DISABLE_PERFORMANCE_ANALYZER_AGENT_CLI
+        value: "true"
+      image: opensearchproject/opensearch:2.19.1
+      imagePullPolicy: IfNotPresent
+      name: opensearch
+      ports:
+      - containerPort: 9200
+        name: http
+        protocol: TCP
+      - containerPort: 9300
+        name: transport
+        protocol: TCP
+      - containerPort: 9600
+        name: metrics
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        periodSeconds: 5
+        successThreshold: 1
+        tcpSocket:
+          port: 9200
+        timeoutSeconds: 3
+      resources:
+        requests:
+          cpu: "1"
+          memory: 100Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+      startupProbe:
+        failureThreshold: 30
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        tcpSocket:
+          port: 9200
+        timeoutSeconds: 3
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /usr/share/opensearch/data
+        name: v4m-search
+      - mountPath: /usr/share/opensearch/plugins/opensearch-security/securityconfig
+        name: security-config-complete
+      - mountPath: /usr/share/opensearch/config/opensearch.yml
+        name: config-emptydir
+        subPath: opensearch.yml
+      - mountPath: /usr/share/opensearch/config/run_securityadmin.sh
+        name: v4m-security-script
+        readOnly: true
+        subPath: run_securityadmin.sh
+      - mountPath: /usr/share/opensearch/config/elk-transport-crt.pem
+        name: transport-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearch/config/elk-transport-key.pem
+        name: transport-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearch/config/elk-transport-root-ca.pem
+        name: transport-certs
+        subPath: ca.crt
+      - mountPath: /usr/share/opensearch/config/elk-rest-crt.pem
+        name: rest-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearch/config/elk-rest-key.pem
+        name: rest-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearch/config/elk-rest-root-ca.pem
+        name: rest-certs
+        subPath: ca.crt
+      - mountPath: /usr/share/opensearch/config/admin-crt.pem
+        name: admin-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearch/config/admin-key.pem
+        name: admin-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearch/config/admin-root-ca.pem
+        name: admin-certs
+        subPath: ca.crt
+      - mountPath: /tmp
+        name: tmpspace
+      - mountPath: /usr/share/opensearch/logs
+        name: logspace
+      - mountPath: /usr/share/opensearch/config/
+        name: configdir
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostname: v4m-search-0
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - |
+        set -xe
+        DESIRED="262144"
+        CURRENT=$(sysctl -n vm.max_map_count)
+        if [ "$DESIRED" -gt "$CURRENT" ]; then
+          sysctl -w vm.max_map_count=$DESIRED
+        fi
+      image: library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: sysctl
+      resources: {}
+      securityContext:
+        privileged: true
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+    - command:
+      - sh
+      - -c
+      - |
+        #!/usr/bin/env bash
+        cp -r /tmp/configfolder/*  /tmp/config/
+      image: opensearchproject/opensearch:2.19.1
+      imagePullPolicy: IfNotPresent
+      name: configfile
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /tmp/config/
+        name: config-emptydir
+      - mountPath: /tmp/configfolder/opensearch.yml
+        name: config
+        subPath: opensearch.yml
+    - command:
+      - sh
+      - -c
+      - cp -r /usr/share/opensearch/config/* /config/
+      - chmod -R 777 /config/
+      - ls /config/
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imagePullPolicy: IfNotPresent
+      name: copy-conf-data
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /config/
+        name: configdir
+    nodeName: aks-dvmsssypto01-16550377-vmss00000d
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: default
+    serviceAccountName: default
+    subdomain: v4m-search-headless
+    terminationGracePeriodSeconds: 120
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    volumes:
+    - name: v4m-search
+      persistentVolumeClaim:
+        claimName: v4m-search-v4m-search-0
+    - configMap:
+        defaultMode: 420
+        name: v4m-search-config
+      name: config
+    - emptyDir: {}
+      name: config-emptydir
+    - name: security-config-complete
+      secret:
+        defaultMode: 420
+        secretName: opensearch-securityconfig
+    - configMap:
+        defaultMode: 493
+        name: run-securityadmin.sh
+      name: v4m-security-script
+    - name: transport-certs
+      secret:
+        defaultMode: 420
+        secretName: es-transport-tls-secret
+    - name: rest-certs
+      secret:
+        defaultMode: 420
+        secretName: es-rest-tls-secret
+    - name: admin-certs
+      secret:
+        defaultMode: 420
+        secretName: es-admin-tls-secret
+    - emptyDir: {}
+      name: tmpspace
+    - emptyDir: {}
+      name: logspace
+    - emptyDir: {}
+      name: configdir
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:48:07Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:48:43Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:48:56Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:48:56Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:41:49Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://4dbad04450c1c6a9d100eec886537bf5ba158fa2cbec4393e19aea6c32be6bf0
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imageID: docker.io/opensearchproject/opensearch@sha256:72fe2fc84be8295906b8efca020b46c58ed45c8da60cd9b8b49e1991e38e89a4
+      lastState: {}
+      name: opensearch
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-13T00:48:43Z"
+    hostIP: 10.73.111.136
+    hostIPs:
+    - ip: 10.73.111.136
+    initContainerStatuses:
+    - containerID: containerd://0775c236c412e254dfb575255a91929441ab8583bba8de0681355f8fb8e072da
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:f85340bf132ae937d2c2a763b8335c9bab35d6e8293f70f606b9c6178d84f42b
+      lastState: {}
+      name: sysctl
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://0775c236c412e254dfb575255a91929441ab8583bba8de0681355f8fb8e072da
+          exitCode: 0
+          finishedAt: "2025-06-13T00:48:06Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:48:06Z"
+    - containerID: containerd://3b0bc59039970f2f7b33c4348b0765cbabd05f07c8e30dd894037b1e51ff537a
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imageID: docker.io/opensearchproject/opensearch@sha256:72fe2fc84be8295906b8efca020b46c58ed45c8da60cd9b8b49e1991e38e89a4
+      lastState: {}
+      name: configfile
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://3b0bc59039970f2f7b33c4348b0765cbabd05f07c8e30dd894037b1e51ff537a
+          exitCode: 0
+          finishedAt: "2025-06-13T00:48:30Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:48:30Z"
+    - containerID: containerd://ce50729360212990938bdc8dfa9a03a3cc35498c86ad9ccd7f095bddd0765eae
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imageID: docker.io/opensearchproject/opensearch@sha256:72fe2fc84be8295906b8efca020b46c58ed45c8da60cd9b8b49e1991e38e89a4
+      lastState: {}
+      name: copy-conf-data
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://ce50729360212990938bdc8dfa9a03a3cc35498c86ad9ccd7f095bddd0765eae
+          exitCode: 0
+          finishedAt: "2025-06-13T00:48:42Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:48:42Z"
+    phase: Running
+    podIP: 10.244.2.8
+    podIPs:
+    - ip: 10.244.2.8
+    qosClass: Burstable
+    startTime: "2025-06-13T00:41:49Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      configchecksum: f399e99588c9daef1bae593b985284f9348989939ce76dcbac0c1f3d9336b81
+      fluentbit.io/parser: elasticsearch
+    creationTimestamp: "2025-06-13T00:40:39Z"
+    generateName: v4m-search-
+    labels:
+      app.kubernetes.io/component: v4m-search
+      app.kubernetes.io/instance: opensearch
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: opensearch
+      app.kubernetes.io/version: 2.19.1
+      apps.kubernetes.io/pod-index: "1"
+      controller-revision-hash: v4m-search-5bb6999c7
+      helm.sh/chart: opensearch-2.32.0
+      statefulset.kubernetes.io/pod-name: v4m-search-1
+    name: v4m-search-1
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: StatefulSet
+      name: v4m-search
+      uid: de70b6f5-85d4-4a27-8acb-c249670283b3
+    resourceVersion: "70016976"
+    uid: 31368009-6914-42ae-9898-cab982a079d5
+  spec:
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - opensearch
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - opensearch
+            topologyKey: kubernetes.io/hostname
+          weight: 1
+    automountServiceAccountToken: false
+    containers:
+    - env:
+      - name: node.name
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: cluster.initial_master_nodes
+        value: v4m-search-0,v4m-search-1,v4m-search-2,
+      - name: discovery.seed_hosts
+        value: v4m-search-headless
+      - name: cluster.name
+        value: opensearch-cluster
+      - name: network.host
+        value: 0.0.0.0
+      - name: OPENSEARCH_JAVA_OPTS
+        value: -Xms4096m -Xmx4096m
+      - name: node.roles
+        value: master,ingest,data,
+      - name: DISABLE_INSTALL_DEMO_CONFIG
+        value: "true"
+      - name: ES_ADMIN_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-admin
+      - name: ES_KIBANASERVER_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-kibanaserver
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      - name: ES_METRICGETTER_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-metricgetter
+      - name: OPENSEARCH_NODE_DN
+        valueFrom:
+          secretKeyRef:
+            key: node_dn
+            name: opensearch-cert-subjects
+      - name: OPENSEARCH_ADMIN_DN
+        valueFrom:
+          secretKeyRef:
+            key: admin_dn
+            name: opensearch-cert-subjects
+      - name: DISABLE_PERFORMANCE_ANALYZER_AGENT_CLI
+        value: "true"
+      image: opensearchproject/opensearch:2.19.1
+      imagePullPolicy: IfNotPresent
+      name: opensearch
+      ports:
+      - containerPort: 9200
+        name: http
+        protocol: TCP
+      - containerPort: 9300
+        name: transport
+        protocol: TCP
+      - containerPort: 9600
+        name: metrics
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        periodSeconds: 5
+        successThreshold: 1
+        tcpSocket:
+          port: 9200
+        timeoutSeconds: 3
+      resources:
+        requests:
+          cpu: "1"
+          memory: 100Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+      startupProbe:
+        failureThreshold: 30
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        tcpSocket:
+          port: 9200
+        timeoutSeconds: 3
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /usr/share/opensearch/data
+        name: v4m-search
+      - mountPath: /usr/share/opensearch/plugins/opensearch-security/securityconfig
+        name: security-config-complete
+      - mountPath: /usr/share/opensearch/config/opensearch.yml
+        name: config-emptydir
+        subPath: opensearch.yml
+      - mountPath: /usr/share/opensearch/config/run_securityadmin.sh
+        name: v4m-security-script
+        readOnly: true
+        subPath: run_securityadmin.sh
+      - mountPath: /usr/share/opensearch/config/elk-transport-crt.pem
+        name: transport-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearch/config/elk-transport-key.pem
+        name: transport-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearch/config/elk-transport-root-ca.pem
+        name: transport-certs
+        subPath: ca.crt
+      - mountPath: /usr/share/opensearch/config/elk-rest-crt.pem
+        name: rest-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearch/config/elk-rest-key.pem
+        name: rest-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearch/config/elk-rest-root-ca.pem
+        name: rest-certs
+        subPath: ca.crt
+      - mountPath: /usr/share/opensearch/config/admin-crt.pem
+        name: admin-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearch/config/admin-key.pem
+        name: admin-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearch/config/admin-root-ca.pem
+        name: admin-certs
+        subPath: ca.crt
+      - mountPath: /tmp
+        name: tmpspace
+      - mountPath: /usr/share/opensearch/logs
+        name: logspace
+      - mountPath: /usr/share/opensearch/config/
+        name: configdir
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostname: v4m-search-1
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - |
+        set -xe
+        DESIRED="262144"
+        CURRENT=$(sysctl -n vm.max_map_count)
+        if [ "$DESIRED" -gt "$CURRENT" ]; then
+          sysctl -w vm.max_map_count=$DESIRED
+        fi
+      image: library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: sysctl
+      resources: {}
+      securityContext:
+        privileged: true
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+    - command:
+      - sh
+      - -c
+      - |
+        #!/usr/bin/env bash
+        cp -r /tmp/configfolder/*  /tmp/config/
+      image: opensearchproject/opensearch:2.19.1
+      imagePullPolicy: IfNotPresent
+      name: configfile
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /tmp/config/
+        name: config-emptydir
+      - mountPath: /tmp/configfolder/opensearch.yml
+        name: config
+        subPath: opensearch.yml
+    - command:
+      - sh
+      - -c
+      - cp -r /usr/share/opensearch/config/* /config/
+      - chmod -R 777 /config/
+      - ls /config/
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imagePullPolicy: IfNotPresent
+      name: copy-conf-data
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /config/
+        name: configdir
+    nodeName: aks-dvmsssypto01-16550377-vmss00000c
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: default
+    serviceAccountName: default
+    subdomain: v4m-search-headless
+    terminationGracePeriodSeconds: 120
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    volumes:
+    - name: v4m-search
+      persistentVolumeClaim:
+        claimName: v4m-search-v4m-search-1
+    - configMap:
+        defaultMode: 420
+        name: v4m-search-config
+      name: config
+    - emptyDir: {}
+      name: config-emptydir
+    - name: security-config-complete
+      secret:
+        defaultMode: 420
+        secretName: opensearch-securityconfig
+    - configMap:
+        defaultMode: 493
+        name: run-securityadmin.sh
+      name: v4m-security-script
+    - name: transport-certs
+      secret:
+        defaultMode: 420
+        secretName: es-transport-tls-secret
+    - name: rest-certs
+      secret:
+        defaultMode: 420
+        secretName: es-rest-tls-secret
+    - name: admin-certs
+      secret:
+        defaultMode: 420
+        secretName: es-admin-tls-secret
+    - emptyDir: {}
+      name: tmpspace
+    - emptyDir: {}
+      name: logspace
+    - emptyDir: {}
+      name: configdir
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:41:04Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:41:21Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:41:43Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:41:43Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:39Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://c7f303d70bf6046a85f377ffc3171ca6e84c98c408260bb1f3e67e134118aa63
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imageID: docker.io/opensearchproject/opensearch@sha256:72fe2fc84be8295906b8efca020b46c58ed45c8da60cd9b8b49e1991e38e89a4
+      lastState: {}
+      name: opensearch
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-13T00:41:21Z"
+    hostIP: 10.73.111.134
+    hostIPs:
+    - ip: 10.73.111.134
+    initContainerStatuses:
+    - containerID: containerd://1ecf853de4cc7ad49f38840e47057bdce9f6174cf0cdace5a39243d290f4bf18
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:f85340bf132ae937d2c2a763b8335c9bab35d6e8293f70f606b9c6178d84f42b
+      lastState: {}
+      name: sysctl
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://1ecf853de4cc7ad49f38840e47057bdce9f6174cf0cdace5a39243d290f4bf18
+          exitCode: 0
+          finishedAt: "2025-06-13T00:41:03Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:41:03Z"
+    - containerID: containerd://ac3dc028b8a72031ae705e45bb20443d9b8aa873d8ed00ebf2858ebdf41b41c4
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imageID: docker.io/opensearchproject/opensearch@sha256:72fe2fc84be8295906b8efca020b46c58ed45c8da60cd9b8b49e1991e38e89a4
+      lastState: {}
+      name: configfile
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://ac3dc028b8a72031ae705e45bb20443d9b8aa873d8ed00ebf2858ebdf41b41c4
+          exitCode: 0
+          finishedAt: "2025-06-13T00:41:12Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:41:12Z"
+    - containerID: containerd://c0d8f7510b9fe9c419e0df53a1773c6242c71875a8c4c47ef593f296ee08c5d4
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imageID: docker.io/opensearchproject/opensearch@sha256:72fe2fc84be8295906b8efca020b46c58ed45c8da60cd9b8b49e1991e38e89a4
+      lastState: {}
+      name: copy-conf-data
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://c0d8f7510b9fe9c419e0df53a1773c6242c71875a8c4c47ef593f296ee08c5d4
+          exitCode: 0
+          finishedAt: "2025-06-13T00:41:18Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:41:18Z"
+    phase: Running
+    podIP: 10.244.1.33
+    podIPs:
+    - ip: 10.244.1.33
+    qosClass: Burstable
+    startTime: "2025-06-13T00:40:39Z"
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    annotations:
+      configchecksum: f399e99588c9daef1bae593b985284f9348989939ce76dcbac0c1f3d9336b81
+      fluentbit.io/parser: elasticsearch
+    creationTimestamp: "2025-06-13T00:34:01Z"
+    generateName: v4m-search-
+    labels:
+      app.kubernetes.io/component: v4m-search
+      app.kubernetes.io/instance: opensearch
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: opensearch
+      app.kubernetes.io/version: 2.19.1
+      apps.kubernetes.io/pod-index: "2"
+      controller-revision-hash: v4m-search-5bb6999c7
+      helm.sh/chart: opensearch-2.32.0
+      statefulset.kubernetes.io/pod-name: v4m-search-2
+    name: v4m-search-2
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: StatefulSet
+      name: v4m-search
+      uid: de70b6f5-85d4-4a27-8acb-c249670283b3
+    resourceVersion: "70011752"
+    uid: d82d20d3-e9f8-43f1-851c-7b8f8f03b56e
+  spec:
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/instance
+                operator: In
+                values:
+                - opensearch
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - opensearch
+            topologyKey: kubernetes.io/hostname
+          weight: 1
+    automountServiceAccountToken: false
+    containers:
+    - env:
+      - name: node.name
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.name
+      - name: cluster.initial_master_nodes
+        value: v4m-search-0,v4m-search-1,v4m-search-2,
+      - name: discovery.seed_hosts
+        value: v4m-search-headless
+      - name: cluster.name
+        value: opensearch-cluster
+      - name: network.host
+        value: 0.0.0.0
+      - name: OPENSEARCH_JAVA_OPTS
+        value: -Xms4096m -Xmx4096m
+      - name: node.roles
+        value: master,ingest,data,
+      - name: DISABLE_INSTALL_DEMO_CONFIG
+        value: "true"
+      - name: ES_ADMIN_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-admin
+      - name: ES_KIBANASERVER_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-kibanaserver
+      - name: ES_LOGCOLLECTOR_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-logcollector
+      - name: ES_METRICGETTER_PASSWD
+        valueFrom:
+          secretKeyRef:
+            key: password
+            name: internal-user-metricgetter
+      - name: OPENSEARCH_NODE_DN
+        valueFrom:
+          secretKeyRef:
+            key: node_dn
+            name: opensearch-cert-subjects
+      - name: OPENSEARCH_ADMIN_DN
+        valueFrom:
+          secretKeyRef:
+            key: admin_dn
+            name: opensearch-cert-subjects
+      - name: DISABLE_PERFORMANCE_ANALYZER_AGENT_CLI
+        value: "true"
+      image: opensearchproject/opensearch:2.19.1
+      imagePullPolicy: IfNotPresent
+      name: opensearch
+      ports:
+      - containerPort: 9200
+        name: http
+        protocol: TCP
+      - containerPort: 9300
+        name: transport
+        protocol: TCP
+      - containerPort: 9600
+        name: metrics
+        protocol: TCP
+      readinessProbe:
+        failureThreshold: 3
+        periodSeconds: 5
+        successThreshold: 1
+        tcpSocket:
+          port: 9200
+        timeoutSeconds: 3
+      resources:
+        requests:
+          cpu: "1"
+          memory: 100Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+      startupProbe:
+        failureThreshold: 30
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        tcpSocket:
+          port: 9200
+        timeoutSeconds: 3
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /usr/share/opensearch/data
+        name: v4m-search
+      - mountPath: /usr/share/opensearch/plugins/opensearch-security/securityconfig
+        name: security-config-complete
+      - mountPath: /usr/share/opensearch/config/opensearch.yml
+        name: config-emptydir
+        subPath: opensearch.yml
+      - mountPath: /usr/share/opensearch/config/run_securityadmin.sh
+        name: v4m-security-script
+        readOnly: true
+        subPath: run_securityadmin.sh
+      - mountPath: /usr/share/opensearch/config/elk-transport-crt.pem
+        name: transport-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearch/config/elk-transport-key.pem
+        name: transport-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearch/config/elk-transport-root-ca.pem
+        name: transport-certs
+        subPath: ca.crt
+      - mountPath: /usr/share/opensearch/config/elk-rest-crt.pem
+        name: rest-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearch/config/elk-rest-key.pem
+        name: rest-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearch/config/elk-rest-root-ca.pem
+        name: rest-certs
+        subPath: ca.crt
+      - mountPath: /usr/share/opensearch/config/admin-crt.pem
+        name: admin-certs
+        subPath: tls.crt
+      - mountPath: /usr/share/opensearch/config/admin-key.pem
+        name: admin-certs
+        subPath: tls.key
+      - mountPath: /usr/share/opensearch/config/admin-root-ca.pem
+        name: admin-certs
+        subPath: ca.crt
+      - mountPath: /tmp
+        name: tmpspace
+      - mountPath: /usr/share/opensearch/logs
+        name: logspace
+      - mountPath: /usr/share/opensearch/config/
+        name: configdir
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    hostname: v4m-search-2
+    initContainers:
+    - command:
+      - sh
+      - -c
+      - |
+        set -xe
+        DESIRED="262144"
+        CURRENT=$(sysctl -n vm.max_map_count)
+        if [ "$DESIRED" -gt "$CURRENT" ]; then
+          sysctl -w vm.max_map_count=$DESIRED
+        fi
+      image: library/busybox:latest
+      imagePullPolicy: IfNotPresent
+      name: sysctl
+      resources: {}
+      securityContext:
+        privileged: true
+        runAsUser: 0
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+    - command:
+      - sh
+      - -c
+      - |
+        #!/usr/bin/env bash
+        cp -r /tmp/configfolder/*  /tmp/config/
+      image: opensearchproject/opensearch:2.19.1
+      imagePullPolicy: IfNotPresent
+      name: configfile
+      resources: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /tmp/config/
+        name: config-emptydir
+      - mountPath: /tmp/configfolder/opensearch.yml
+        name: config
+        subPath: opensearch.yml
+    - command:
+      - sh
+      - -c
+      - cp -r /usr/share/opensearch/config/* /config/
+      - chmod -R 777 /config/
+      - ls /config/
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imagePullPolicy: IfNotPresent
+      name: copy-conf-data
+      resources: {}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+          - ALL
+        privileged: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /config/
+        name: configdir
+    nodeName: aks-dvmsssypto01-16550377-vmss00000c
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext:
+      fsGroup: 1000
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    serviceAccount: default
+    serviceAccountName: default
+    subdomain: v4m-search-headless
+    terminationGracePeriodSeconds: 120
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoSchedule
+      key: node.kubernetes.io/memory-pressure
+      operator: Exists
+    volumes:
+    - name: v4m-search
+      persistentVolumeClaim:
+        claimName: v4m-search-v4m-search-2
+    - configMap:
+        defaultMode: 420
+        name: v4m-search-config
+      name: config
+    - emptyDir: {}
+      name: config-emptydir
+    - name: security-config-complete
+      secret:
+        defaultMode: 420
+        secretName: opensearch-securityconfig
+    - configMap:
+        defaultMode: 493
+        name: run-securityadmin.sh
+      name: v4m-security-script
+    - name: transport-certs
+      secret:
+        defaultMode: 420
+        secretName: es-transport-tls-secret
+    - name: rest-certs
+      secret:
+        defaultMode: 420
+        secretName: es-rest-tls-secret
+    - name: admin-certs
+      secret:
+        defaultMode: 420
+        secretName: es-admin-tls-secret
+    - emptyDir: {}
+      name: tmpspace
+    - emptyDir: {}
+      name: logspace
+    - emptyDir: {}
+      name: configdir
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:34:33Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:35:10Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:35:22Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:35:22Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:34:01Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://702f151d8ec7503fed96e8bb48bff444b6868a91b44d3e35deb38981b281bd7e
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imageID: docker.io/opensearchproject/opensearch@sha256:72fe2fc84be8295906b8efca020b46c58ed45c8da60cd9b8b49e1991e38e89a4
+      lastState: {}
+      name: opensearch
+      ready: true
+      restartCount: 0
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-13T00:35:10Z"
+    hostIP: 10.73.111.134
+    hostIPs:
+    - ip: 10.73.111.134
+    initContainerStatuses:
+    - containerID: containerd://59f2b0859f558f9676c3c1134ac2aeb3bee420309c8f73a9926cba24d38623bb
+      image: docker.io/library/busybox:latest
+      imageID: docker.io/library/busybox@sha256:f85340bf132ae937d2c2a763b8335c9bab35d6e8293f70f606b9c6178d84f42b
+      lastState: {}
+      name: sysctl
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://59f2b0859f558f9676c3c1134ac2aeb3bee420309c8f73a9926cba24d38623bb
+          exitCode: 0
+          finishedAt: "2025-06-13T00:34:33Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:34:33Z"
+    - containerID: containerd://51044a348008e856a94f541b77e325f72b44ef26daea107b8592c5fcc3ade14a
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imageID: docker.io/opensearchproject/opensearch@sha256:72fe2fc84be8295906b8efca020b46c58ed45c8da60cd9b8b49e1991e38e89a4
+      lastState: {}
+      name: configfile
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://51044a348008e856a94f541b77e325f72b44ef26daea107b8592c5fcc3ade14a
+          exitCode: 0
+          finishedAt: "2025-06-13T00:35:00Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:35:00Z"
+    - containerID: containerd://edbd501299e22754dcd6ec70cfcbd5e6edcc4207e457f4d5209e56c51804f4d3
+      image: docker.io/opensearchproject/opensearch:2.19.1
+      imageID: docker.io/opensearchproject/opensearch@sha256:72fe2fc84be8295906b8efca020b46c58ed45c8da60cd9b8b49e1991e38e89a4
+      lastState: {}
+      name: copy-conf-data
+      ready: true
+      restartCount: 0
+      started: false
+      state:
+        terminated:
+          containerID: containerd://edbd501299e22754dcd6ec70cfcbd5e6edcc4207e457f4d5209e56c51804f4d3
+          exitCode: 0
+          finishedAt: "2025-06-13T00:35:09Z"
+          reason: Completed
+          startedAt: "2025-06-13T00:35:09Z"
+    phase: Running
+    podIP: 10.244.1.6
+    podIPs:
+    - ip: 10.244.1.6
+    qosClass: Burstable
+    startTime: "2025-06-13T00:34:01Z"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: es-exporter
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:48:52Z"
+    labels:
+      app.kubernetes.io/instance: es-exporter
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: prometheus-elasticsearch-exporter
+      app.kubernetes.io/version: v1.8.0
+      helm.sh/chart: prometheus-elasticsearch-exporter-6.6.1
+    name: v4m-es-exporter
+    namespace: logging
+    resourceVersion: "24679032"
+    uid: f7d8a412-6baa-42d5-b46e-3abf21bf94e8
+  spec:
+    clusterIP: 10.0.182.173
+    clusterIPs:
+    - 10.0.182.173
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 9108
+      protocol: TCP
+      targetPort: 9108
+    selector:
+      app.kubernetes.io/instance: es-exporter
+      app.kubernetes.io/name: prometheus-elasticsearch-exporter
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: v4m-fb
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:49:39Z"
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: fluent-bit
+      app.kubernetes.io/version: 3.2.6
+      helm.sh/chart: fluent-bit-0.48.6
+    name: v4m-fb
+    namespace: logging
+    resourceVersion: "24679560"
+    uid: 7624ff1a-5380-450d-8080-02ea70a99c52
+  spec:
+    clusterIP: 10.0.127.155
+    clusterIPs:
+    - 10.0.127.155
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 2020
+      protocol: TCP
+      targetPort: http
+    selector:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/name: fluent-bit
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: v4m-fb-events
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:50:02Z"
+    labels:
+      app.kubernetes.io/instance: v4m-fb-events
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: fluent-bit
+      app.kubernetes.io/version: 3.2.6
+      helm.sh/chart: fluent-bit-0.48.6
+    name: v4m-fb-events
+    namespace: logging
+    resourceVersion: "24679910"
+    uid: b62a3eff-765c-40fd-947e-45f23db6c0d9
+  spec:
+    clusterIP: 10.0.176.85
+    clusterIPs:
+    - 10.0.176.85
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 2020
+      protocol: TCP
+      targetPort: http
+    selector:
+      app.kubernetes.io/instance: v4m-fb-events
+      app.kubernetes.io/name: fluent-bit
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: v4m-osd
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:45:42Z"
+    labels:
+      app.kubernetes.io/instance: v4m-osd
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: opensearch-dashboards
+      app.kubernetes.io/version: 2.19.1
+      helm.sh/chart: opensearch-dashboards-2.28.0
+    name: v4m-osd
+    namespace: logging
+    resourceVersion: "24677016"
+    uid: a44b5cab-1c50-4859-a122-93a23dea28d8
+  spec:
+    clusterIP: 10.0.195.61
+    clusterIPs:
+    - 10.0.195.61
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 5601
+      protocol: TCP
+      targetPort: 5601
+    - name: metrics
+      port: 9601
+      protocol: TCP
+      targetPort: 9601
+    selector:
+      app.kubernetes.io/instance: v4m-osd
+      app.kubernetes.io/name: opensearch-dashboards
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: opensearch
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:46:00Z"
+    labels:
+      app.kubernetes.io/component: v4m-search
+      app.kubernetes.io/instance: opensearch
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: opensearch
+      app.kubernetes.io/version: 2.19.1
+      helm.sh/chart: opensearch-2.32.0
+    name: v4m-search
+    namespace: logging
+    resourceVersion: "24677281"
+    uid: 61c3f126-7732-40fa-9de8-82981c7a24b1
+  spec:
+    clusterIP: 10.0.172.122
+    clusterIPs:
+    - 10.0.172.122
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 9200
+      protocol: TCP
+      targetPort: 9200
+    - name: transport
+      port: 9300
+      protocol: TCP
+      targetPort: 9300
+    - name: metrics
+      port: 9600
+      protocol: TCP
+      targetPort: 9600
+    selector:
+      app.kubernetes.io/instance: opensearch
+      app.kubernetes.io/name: opensearch
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      meta.helm.sh/release-name: opensearch
+      meta.helm.sh/release-namespace: logging
+      service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    creationTimestamp: "2025-04-21T05:46:00Z"
+    labels:
+      app.kubernetes.io/component: v4m-search
+      app.kubernetes.io/instance: opensearch
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: opensearch
+      app.kubernetes.io/version: 2.19.1
+      helm.sh/chart: opensearch-2.32.0
+    name: v4m-search-headless
+    namespace: logging
+    resourceVersion: "24677279"
+    uid: 906e0ac6-f7d4-498f-9ae5-3a2eb4f363f5
+  spec:
+    clusterIP: None
+    clusterIPs:
+    - None
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 9200
+      protocol: TCP
+      targetPort: 9200
+    - name: transport
+      port: 9300
+      protocol: TCP
+      targetPort: 9300
+    - name: metrics
+      port: 9600
+      protocol: TCP
+      targetPort: 9600
+    publishNotReadyAddresses: true
+    selector:
+      app.kubernetes.io/instance: opensearch
+      app.kubernetes.io/name: opensearch
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: DaemonSet
+  metadata:
+    annotations:
+      deprecated.daemonset.template.generation: "3"
+      meta.helm.sh/release-name: v4m-fb
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:49:39Z"
+    generation: 3
+    labels:
+      app.kubernetes.io/instance: v4m-fb
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: fluent-bit
+      app.kubernetes.io/version: 3.2.6
+      helm.sh/chart: fluent-bit-0.48.6
+    name: v4m-fb
+    namespace: logging
+    resourceVersion: "86055368"
+    uid: 0a1cd332-eae4-4373-b6e3-d241e9f49533
+  spec:
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: v4m-fb
+        app.kubernetes.io/name: fluent-bit
+    template:
+      metadata:
+        annotations:
+          checksum/config: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+          fluentbit.io/parser: fluentbit
+          kubectl.kubernetes.io/restartedAt: "2025-04-21T05:50:00Z"
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/instance: v4m-fb
+          app.kubernetes.io/name: fluent-bit
+          fbout: es
+      spec:
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - --workdir=/fluent-bit/etc
+          - --config=/fluent-bit/etc/conf/fluent-bit.conf
+          command:
+          - /fluent-bit/bin/fluent-bit
+          env:
+          - name: ES_LOGCOLLECTOR_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: internal-user-logcollector
+          - name: ES_LOGCOLLECTOR_PASSWD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-logcollector
+          envFrom:
+          - configMapRef:
+              name: fb-env-vars
+          image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: fluent-bit
+          ports:
+          - containerPort: 2020
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/v1/health
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsUser: 3301
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /fluent-bit/etc/conf
+            name: config
+          - mountPath: /var/log
+            name: varlog
+          - mountPath: /var/lib/docker/containers
+            name: varlibdockercontainers
+            readOnly: true
+          - mountPath: /etc/machine-id
+            name: etcmachineid
+            readOnly: true
+          - mountPath: /fluent-bit/etc/viya-parsers.conf
+            name: parsers-config
+            subPath: viya-parsers.conf
+          - mountPath: /fluent-bit/etc/viya-tracing.conf
+            name: tracing-config
+            subPath: viya-tracing.conf
+          - mountPath: /var/log/v4m-fb-storage
+            name: v4m-fb-storage
+        dnsPolicy: ClusterFirst
+        initContainers:
+        - command:
+          - sh
+          - -c
+          - ./usr/bin/migrate_fbstate_db.sh
+          image: docker.io/library/busybox:latest
+          imagePullPolicy: IfNotPresent
+          name: chowner-v4m-fb-storage
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: true
+            capabilities:
+              add:
+              - CHOWN
+              drop:
+              - all
+            privileged: true
+            readOnlyRootFilesystem: true
+            runAsNonRoot: false
+            runAsUser: 0
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/log/v4m-fb-storage
+            name: v4m-fb-storage
+          - mountPath: /usr/bin/migrate_fbstate_db.sh
+            name: dbmigrate-script
+            subPath: migrate_fbstate_db.sh
+          - mountPath: /var/log
+            name: varlog
+            readOnly: true
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: v4m-fb
+        serviceAccountName: v4m-fb
+        terminationGracePeriodSeconds: 30
+        tolerations:
+        - operator: Exists
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: fb-fluent-bit-config
+          name: config
+        - hostPath:
+            path: /var/log
+            type: ""
+          name: varlog
+        - hostPath:
+            path: /var/lib/docker/containers
+            type: ""
+          name: varlibdockercontainers
+        - hostPath:
+            path: /etc/machine-id
+            type: File
+          name: etcmachineid
+        - hostPath:
+            path: /var/log/v4m-fb-storage
+            type: DirectoryOrCreate
+          name: v4m-fb-storage
+        - configMap:
+            defaultMode: 420
+            name: fb-viya-parsers
+          name: parsers-config
+        - configMap:
+            defaultMode: 420
+            name: fb-viya-tracing
+          name: tracing-config
+        - configMap:
+            defaultMode: 493
+            name: fb-dbmigrate-script
+          name: dbmigrate-script
+    updateStrategy:
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+      type: RollingUpdate
+  status:
+    currentNumberScheduled: 8
+    desiredNumberScheduled: 8
+    numberAvailable: 8
+    numberMisscheduled: 0
+    numberReady: 8
+    observedGeneration: 3
+    updatedNumberScheduled: 8
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: es-exporter
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:48:52Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/instance: es-exporter
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: prometheus-elasticsearch-exporter
+      app.kubernetes.io/version: v1.8.0
+      helm.sh/chart: prometheus-elasticsearch-exporter-6.6.1
+    name: v4m-es-exporter
+    namespace: logging
+    resourceVersion: "70016779"
+    uid: 0b263ff4-275e-4cc6-b82e-2344aec7a89f
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: es-exporter
+        app.kubernetes.io/name: prometheus-elasticsearch-exporter
+    strategy:
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+      type: RollingUpdate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/instance: es-exporter
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: prometheus-elasticsearch-exporter
+          app.kubernetes.io/version: v1.8.0
+          helm.sh/chart: prometheus-elasticsearch-exporter-6.6.1
+          searchbackend: opensearch
+      spec:
+        containers:
+        - command:
+          - elasticsearch_exporter
+          - --log.format=json
+          - --log.level=info
+          - --es.uri=https://$(ES_USER):$(ES_PASSWORD)@v4m-search:9200
+          - --es.all
+          - --es.indices
+          - --es.indices_settings
+          - --es.indices_mappings
+          - --es.shards
+          - --collector.snapshots
+          - --es.timeout=30s
+          - --es.ssl-skip-verify
+          - --web.listen-address=:9108
+          - --web.telemetry-path=/metrics
+          env:
+          - name: ES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-metricgetter
+          - name: ES_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: internal-user-metricgetter
+          image: quay.io/prometheuscommunity/elasticsearch-exporter:v1.8.0
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/sleep
+                - "20"
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: exporter
+          ports:
+          - containerPort: 9108
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: default
+        serviceAccountName: default
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-04-21T05:48:52Z"
+      lastUpdateTime: "2025-04-21T05:48:56Z"
+      message: ReplicaSet "v4m-es-exporter-5cc7fc6b57" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-06-13T00:41:24Z"
+      lastUpdateTime: "2025-06-13T00:41:24Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      meta.helm.sh/release-name: v4m-fb-events
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:50:02Z"
+    generation: 3
+    labels:
+      app.kubernetes.io/instance: v4m-fb-events
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: fluent-bit
+      app.kubernetes.io/version: 3.2.6
+      helm.sh/chart: fluent-bit-0.48.6
+    name: v4m-fb-events
+    namespace: logging
+    resourceVersion: "70015649"
+    uid: 9909c824-4c8c-4e3d-a4c6-6764dfaceb53
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: v4m-fb-events
+        app.kubernetes.io/name: fluent-bit
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          checksum/config: 061bffe593a253346d43955cf0717e672b956594fd199501866ab4ade1a5ec49
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/instance: v4m-fb-events
+          app.kubernetes.io/name: fluent-bit
+      spec:
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - --workdir=/fluent-bit/etc
+          - --config=/fluent-bit/etc/conf/fluent-bit.conf
+          command:
+          - /fluent-bit/bin/fluent-bit
+          env:
+          - name: ES_LOGCOLLECTOR_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: internal-user-logcollector
+          - name: ES_LOGCOLLECTOR_PASSWD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-logcollector
+          image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: fluent-bit
+          ports:
+          - containerPort: 2020
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/v1/health
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 70m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /fluent-bit/etc/conf
+            name: config
+          - mountPath: /tmp/v4m
+            name: fb-events-db
+            subPath: v4m_fb_events.db
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: v4m-fb-events
+        serviceAccountName: v4m-fb-events
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: v4m-fb-events
+          name: config
+        - emptyDir: {}
+          name: fb-events-db
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-04-21T05:50:02Z"
+      lastUpdateTime: "2025-04-21T05:50:03Z"
+      message: ReplicaSet "v4m-fb-events-5c7c4b886f" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-06-13T00:40:41Z"
+      lastUpdateTime: "2025-06-13T00:40:41Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 3
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: v4m-osd
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:45:42Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/instance: v4m-osd
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: opensearch-dashboards
+      app.kubernetes.io/version: 2.19.1
+      helm.sh/chart: opensearch-dashboards-2.28.0
+    name: v4m-osd
+    namespace: logging
+    resourceVersion: "70017433"
+    uid: f2a95011-7679-4587-99fb-cb87c1933d56
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: v4m-osd
+        app.kubernetes.io/name: opensearch-dashboards
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          configchecksum: e9e917cce3857b0b5ba10364b3ef56eac5006e6b975d993ff23045b39f6f3f6
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/instance: v4m-osd
+          app.kubernetes.io/name: opensearch-dashboards
+      spec:
+        containers:
+        - env:
+          - name: OPENSEARCH_HOSTS
+            value: https://v4m-search:9200
+          - name: SERVER_HOST
+            value: 0.0.0.0
+          - name: SERVER_BASEPATH
+            value: /dashboards
+          - name: OSD_ENABLE_TLS
+            valueFrom:
+              secretKeyRef:
+                key: enable_tls
+                name: v4m-osd-tls-enabled
+          - name: OPENSEARCH_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: internal-user-kibanaserver
+          - name: OPENSEARCH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-kibanaserver
+          image: docker.io/opensearchproject/opensearch-dashboards:2.19.1
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 10
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            successThreshold: 1
+            tcpSocket:
+              port: 5601
+            timeoutSeconds: 5
+          name: dashboards
+          ports:
+          - containerPort: 5601
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 10
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            successThreshold: 1
+            tcpSocket:
+              port: 5601
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 100m
+              memory: 512M
+            requests:
+              cpu: 100m
+              memory: 512M
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          startupProbe:
+            failureThreshold: 20
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 5601
+            timeoutSeconds: 5
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
+            name: config
+            subPath: opensearch_dashboards.yml
+          - mountPath: /usr/share/opensearchdashboards/certs/kibana-crt.pem
+            name: kibana-certs
+            subPath: tls.crt
+          - mountPath: /usr/share/opensearchdashboards/certs/kibana-key.pem
+            name: kibana-certs
+            subPath: tls.key
+          - mountPath: /usr/share/opensearchdashboards/certs/kibana-root-ca.pem
+            name: kibana-certs
+            subPath: ca.crt
+          - mountPath: /usr/share/opensearch-dashboards/data/
+            name: uuid-file
+            subPath: uuid
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: v4m-osd-dashboards
+        serviceAccountName: v4m-osd-dashboards
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: v4m-osd-config
+          name: config
+        - name: kibana-certs
+          secret:
+            defaultMode: 420
+            secretName: kibana-tls-secret
+        - emptyDir: {}
+          name: uuid-file
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-04-21T05:45:42Z"
+      lastUpdateTime: "2025-04-21T05:46:52Z"
+      message: ReplicaSet "v4m-osd-799db68467" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-06-13T00:42:20Z"
+      lastUpdateTime: "2025-06-13T00:42:20Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: es-exporter
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:48:52Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/instance: es-exporter
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: prometheus-elasticsearch-exporter
+      app.kubernetes.io/version: v1.8.0
+      helm.sh/chart: prometheus-elasticsearch-exporter-6.6.1
+      pod-template-hash: 5cc7fc6b57
+      searchbackend: opensearch
+    name: v4m-es-exporter-5cc7fc6b57
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: v4m-es-exporter
+      uid: 0b263ff4-275e-4cc6-b82e-2344aec7a89f
+    resourceVersion: "70016776"
+    uid: 651563a9-d82a-4e1d-aa98-ce447a444fee
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: es-exporter
+        app.kubernetes.io/name: prometheus-elasticsearch-exporter
+        pod-template-hash: 5cc7fc6b57
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/instance: es-exporter
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: prometheus-elasticsearch-exporter
+          app.kubernetes.io/version: v1.8.0
+          helm.sh/chart: prometheus-elasticsearch-exporter-6.6.1
+          pod-template-hash: 5cc7fc6b57
+          searchbackend: opensearch
+      spec:
+        containers:
+        - command:
+          - elasticsearch_exporter
+          - --log.format=json
+          - --log.level=info
+          - --es.uri=https://$(ES_USER):$(ES_PASSWORD)@v4m-search:9200
+          - --es.all
+          - --es.indices
+          - --es.indices_settings
+          - --es.indices_mappings
+          - --es.shards
+          - --collector.snapshots
+          - --es.timeout=30s
+          - --es.ssl-skip-verify
+          - --web.listen-address=:9108
+          - --web.telemetry-path=/metrics
+          env:
+          - name: ES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-metricgetter
+          - name: ES_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: internal-user-metricgetter
+          image: quay.io/prometheuscommunity/elasticsearch-exporter:v1.8.0
+          imagePullPolicy: IfNotPresent
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                - /bin/sleep
+                - "20"
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+          name: exporter
+          ports:
+          - containerPort: 9108
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: default
+        serviceAccountName: default
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "2"
+      deployment.kubernetes.io/revision: "2"
+      meta.helm.sh/release-name: v4m-fb-events
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:50:03Z"
+    generation: 2
+    labels:
+      app.kubernetes.io/instance: v4m-fb-events
+      app.kubernetes.io/name: fluent-bit
+      pod-template-hash: 5c7c4b886f
+    name: v4m-fb-events-5c7c4b886f
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: v4m-fb-events
+      uid: 9909c824-4c8c-4e3d-a4c6-6764dfaceb53
+    resourceVersion: "70015646"
+    uid: a825c776-ba1e-44b8-aeb4-85df493d4202
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: v4m-fb-events
+        app.kubernetes.io/name: fluent-bit
+        pod-template-hash: 5c7c4b886f
+    template:
+      metadata:
+        annotations:
+          checksum/config: 061bffe593a253346d43955cf0717e672b956594fd199501866ab4ade1a5ec49
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/instance: v4m-fb-events
+          app.kubernetes.io/name: fluent-bit
+          pod-template-hash: 5c7c4b886f
+      spec:
+        automountServiceAccountToken: true
+        containers:
+        - args:
+          - --workdir=/fluent-bit/etc
+          - --config=/fluent-bit/etc/conf/fluent-bit.conf
+          command:
+          - /fluent-bit/bin/fluent-bit
+          env:
+          - name: ES_LOGCOLLECTOR_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: internal-user-logcollector
+          - name: ES_LOGCOLLECTOR_PASSWD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-logcollector
+          image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: fluent-bit
+          ports:
+          - containerPort: 2020
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/v1/health
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 70m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /fluent-bit/etc/conf
+            name: config
+          - mountPath: /tmp/v4m
+            name: fb-events-db
+            subPath: v4m_fb_events.db
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: v4m-fb-events
+        serviceAccountName: v4m-fb-events
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: v4m-fb-events
+          name: config
+        - emptyDir: {}
+          name: fb-events-db
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 2
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "0"
+      deployment.kubernetes.io/max-replicas: "0"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: v4m-fb-events
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:50:02Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/instance: v4m-fb-events
+      app.kubernetes.io/name: fluent-bit
+      pod-template-hash: 5cb86bcd9d
+    name: v4m-fb-events-5cb86bcd9d
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: v4m-fb-events
+      uid: 9909c824-4c8c-4e3d-a4c6-6764dfaceb53
+    resourceVersion: "24679918"
+    uid: fe4a8ede-0631-4726-8a90-8d46e4899584
+  spec:
+    replicas: 0
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: v4m-fb-events
+        app.kubernetes.io/name: fluent-bit
+        pod-template-hash: 5cb86bcd9d
+    template:
+      metadata:
+        annotations:
+          checksum/config: 061bffe593a253346d43955cf0717e672b956594fd199501866ab4ade1a5ec49
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/instance: v4m-fb-events
+          app.kubernetes.io/name: fluent-bit
+          pod-template-hash: 5cb86bcd9d
+      spec:
+        containers:
+        - args:
+          - --workdir=/fluent-bit/etc
+          - --config=/fluent-bit/etc/conf/fluent-bit.conf
+          command:
+          - /fluent-bit/bin/fluent-bit
+          env:
+          - name: ES_LOGCOLLECTOR_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: internal-user-logcollector
+          - name: ES_LOGCOLLECTOR_PASSWD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-logcollector
+          image: cr.fluentbit.io/fluent/fluent-bit:3.2.6
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: fluent-bit
+          ports:
+          - containerPort: 2020
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/v1/health
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 70m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /fluent-bit/etc/conf
+            name: config
+          - mountPath: /tmp/v4m
+            name: fb-events-db
+            subPath: v4m_fb_events.db
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: v4m-fb-events
+        serviceAccountName: v4m-fb-events
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: v4m-fb-events
+          name: config
+        - emptyDir: {}
+          name: fb-events-db
+  status:
+    observedGeneration: 1
+    replicas: 0
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "1"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: v4m-osd
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:45:42Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/instance: v4m-osd
+      app.kubernetes.io/name: opensearch-dashboards
+      pod-template-hash: 799db68467
+    name: v4m-osd-799db68467
+    namespace: logging
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: v4m-osd
+      uid: f2a95011-7679-4587-99fb-cb87c1933d56
+    resourceVersion: "70017430"
+    uid: 085e9cbb-d613-463f-a9eb-412ea297e8ce
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: v4m-osd
+        app.kubernetes.io/name: opensearch-dashboards
+        pod-template-hash: 799db68467
+    template:
+      metadata:
+        annotations:
+          configchecksum: e9e917cce3857b0b5ba10364b3ef56eac5006e6b975d993ff23045b39f6f3f6
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/instance: v4m-osd
+          app.kubernetes.io/name: opensearch-dashboards
+          pod-template-hash: 799db68467
+      spec:
+        containers:
+        - env:
+          - name: OPENSEARCH_HOSTS
+            value: https://v4m-search:9200
+          - name: SERVER_HOST
+            value: 0.0.0.0
+          - name: SERVER_BASEPATH
+            value: /dashboards
+          - name: OSD_ENABLE_TLS
+            valueFrom:
+              secretKeyRef:
+                key: enable_tls
+                name: v4m-osd-tls-enabled
+          - name: OPENSEARCH_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: internal-user-kibanaserver
+          - name: OPENSEARCH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-kibanaserver
+          image: docker.io/opensearchproject/opensearch-dashboards:2.19.1
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 10
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            successThreshold: 1
+            tcpSocket:
+              port: 5601
+            timeoutSeconds: 5
+          name: dashboards
+          ports:
+          - containerPort: 5601
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 10
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            successThreshold: 1
+            tcpSocket:
+              port: 5601
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 100m
+              memory: 512M
+            requests:
+              cpu: 100m
+              memory: 512M
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          startupProbe:
+            failureThreshold: 20
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 5601
+            timeoutSeconds: 5
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /usr/share/opensearch-dashboards/config/opensearch_dashboards.yml
+            name: config
+            subPath: opensearch_dashboards.yml
+          - mountPath: /usr/share/opensearchdashboards/certs/kibana-crt.pem
+            name: kibana-certs
+            subPath: tls.crt
+          - mountPath: /usr/share/opensearchdashboards/certs/kibana-key.pem
+            name: kibana-certs
+            subPath: tls.key
+          - mountPath: /usr/share/opensearchdashboards/certs/kibana-root-ca.pem
+            name: kibana-certs
+            subPath: ca.crt
+          - mountPath: /usr/share/opensearch-dashboards/data/
+            name: uuid-file
+            subPath: uuid
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          seccompProfile:
+            type: RuntimeDefault
+        serviceAccount: v4m-osd-dashboards
+        serviceAccountName: v4m-osd-dashboards
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: v4m-osd-config
+          name: config
+        - name: kibana-certs
+          secret:
+            defaultMode: 420
+            secretName: kibana-tls-secret
+        - emptyDir: {}
+          name: uuid-file
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    annotations:
+      majorVersion: "2"
+      meta.helm.sh/release-name: opensearch
+      meta.helm.sh/release-namespace: logging
+    creationTimestamp: "2025-04-21T05:46:00Z"
+    generation: 1
+    labels:
+      app.kubernetes.io/component: v4m-search
+      app.kubernetes.io/instance: opensearch
+      app.kubernetes.io/managed-by: Helm
+      app.kubernetes.io/name: opensearch
+      app.kubernetes.io/version: 2.19.1
+      helm.sh/chart: opensearch-2.32.0
+    name: v4m-search
+    namespace: logging
+    resourceVersion: "70021766"
+    uid: de70b6f5-85d4-4a27-8acb-c249670283b3
+  spec:
+    persistentVolumeClaimRetentionPolicy:
+      whenDeleted: Retain
+      whenScaled: Retain
+    podManagementPolicy: Parallel
+    replicas: 3
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app.kubernetes.io/instance: opensearch
+        app.kubernetes.io/name: opensearch
+    serviceName: v4m-search-headless
+    template:
+      metadata:
+        annotations:
+          configchecksum: f399e99588c9daef1bae593b985284f9348989939ce76dcbac0c1f3d9336b81
+          fluentbit.io/parser: elasticsearch
+        creationTimestamp: null
+        labels:
+          app.kubernetes.io/component: v4m-search
+          app.kubernetes.io/instance: opensearch
+          app.kubernetes.io/managed-by: Helm
+          app.kubernetes.io/name: opensearch
+          app.kubernetes.io/version: 2.19.1
+          helm.sh/chart: opensearch-2.32.0
+        name: v4m-search
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                  - key: app.kubernetes.io/instance
+                    operator: In
+                    values:
+                    - opensearch
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                    - opensearch
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        automountServiceAccountToken: false
+        containers:
+        - env:
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: cluster.initial_master_nodes
+            value: v4m-search-0,v4m-search-1,v4m-search-2,
+          - name: discovery.seed_hosts
+            value: v4m-search-headless
+          - name: cluster.name
+            value: opensearch-cluster
+          - name: network.host
+            value: 0.0.0.0
+          - name: OPENSEARCH_JAVA_OPTS
+            value: -Xms4096m -Xmx4096m
+          - name: node.roles
+            value: master,ingest,data,
+          - name: DISABLE_INSTALL_DEMO_CONFIG
+            value: "true"
+          - name: ES_ADMIN_PASSWD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-admin
+          - name: ES_KIBANASERVER_PASSWD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-kibanaserver
+          - name: ES_LOGCOLLECTOR_PASSWD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-logcollector
+          - name: ES_METRICGETTER_PASSWD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: internal-user-metricgetter
+          - name: OPENSEARCH_NODE_DN
+            valueFrom:
+              secretKeyRef:
+                key: node_dn
+                name: opensearch-cert-subjects
+          - name: OPENSEARCH_ADMIN_DN
+            valueFrom:
+              secretKeyRef:
+                key: admin_dn
+                name: opensearch-cert-subjects
+          - name: DISABLE_PERFORMANCE_ANALYZER_AGENT_CLI
+            value: "true"
+          image: opensearchproject/opensearch:2.19.1
+          imagePullPolicy: IfNotPresent
+          name: opensearch
+          ports:
+          - containerPort: 9200
+            name: http
+            protocol: TCP
+          - containerPort: 9300
+            name: transport
+            protocol: TCP
+          - containerPort: 9600
+            name: metrics
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 5
+            successThreshold: 1
+            tcpSocket:
+              port: 9200
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: "1"
+              memory: 100Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+          startupProbe:
+            failureThreshold: 30
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 9200
+            timeoutSeconds: 3
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /usr/share/opensearch/data
+            name: v4m-search
+          - mountPath: /usr/share/opensearch/plugins/opensearch-security/securityconfig
+            name: security-config-complete
+          - mountPath: /usr/share/opensearch/config/opensearch.yml
+            name: config-emptydir
+            subPath: opensearch.yml
+          - mountPath: /usr/share/opensearch/config/run_securityadmin.sh
+            name: v4m-security-script
+            readOnly: true
+            subPath: run_securityadmin.sh
+          - mountPath: /usr/share/opensearch/config/elk-transport-crt.pem
+            name: transport-certs
+            subPath: tls.crt
+          - mountPath: /usr/share/opensearch/config/elk-transport-key.pem
+            name: transport-certs
+            subPath: tls.key
+          - mountPath: /usr/share/opensearch/config/elk-transport-root-ca.pem
+            name: transport-certs
+            subPath: ca.crt
+          - mountPath: /usr/share/opensearch/config/elk-rest-crt.pem
+            name: rest-certs
+            subPath: tls.crt
+          - mountPath: /usr/share/opensearch/config/elk-rest-key.pem
+            name: rest-certs
+            subPath: tls.key
+          - mountPath: /usr/share/opensearch/config/elk-rest-root-ca.pem
+            name: rest-certs
+            subPath: ca.crt
+          - mountPath: /usr/share/opensearch/config/admin-crt.pem
+            name: admin-certs
+            subPath: tls.crt
+          - mountPath: /usr/share/opensearch/config/admin-key.pem
+            name: admin-certs
+            subPath: tls.key
+          - mountPath: /usr/share/opensearch/config/admin-root-ca.pem
+            name: admin-certs
+            subPath: ca.crt
+          - mountPath: /tmp
+            name: tmpspace
+          - mountPath: /usr/share/opensearch/logs
+            name: logspace
+          - mountPath: /usr/share/opensearch/config/
+            name: configdir
+        dnsPolicy: ClusterFirst
+        enableServiceLinks: true
+        initContainers:
+        - command:
+          - sh
+          - -c
+          - |
+            set -xe
+            DESIRED="262144"
+            CURRENT=$(sysctl -n vm.max_map_count)
+            if [ "$DESIRED" -gt "$CURRENT" ]; then
+              sysctl -w vm.max_map_count=$DESIRED
+            fi
+          image: library/busybox:latest
+          imagePullPolicy: IfNotPresent
+          name: sysctl
+          resources: {}
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        - command:
+          - sh
+          - -c
+          - |
+            #!/usr/bin/env bash
+            cp -r /tmp/configfolder/*  /tmp/config/
+          image: opensearchproject/opensearch:2.19.1
+          imagePullPolicy: IfNotPresent
+          name: configfile
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /tmp/config/
+            name: config-emptydir
+          - mountPath: /tmp/configfolder/opensearch.yml
+            name: config
+            subPath: opensearch.yml
+        - command:
+          - sh
+          - -c
+          - cp -r /usr/share/opensearch/config/* /config/
+          - chmod -R 777 /config/
+          - ls /config/
+          image: docker.io/opensearchproject/opensearch:2.19.1
+          imagePullPolicy: IfNotPresent
+          name: copy-conf-data
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /config/
+            name: configdir
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext:
+          fsGroup: 1000
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        terminationGracePeriodSeconds: 120
+        volumes:
+        - configMap:
+            defaultMode: 420
+            name: v4m-search-config
+          name: config
+        - emptyDir: {}
+          name: config-emptydir
+        - name: security-config-complete
+          secret:
+            defaultMode: 420
+            secretName: opensearch-securityconfig
+        - configMap:
+            defaultMode: 493
+            name: run-securityadmin.sh
+          name: v4m-security-script
+        - name: transport-certs
+          secret:
+            defaultMode: 420
+            secretName: es-transport-tls-secret
+        - name: rest-certs
+          secret:
+            defaultMode: 420
+            secretName: es-rest-tls-secret
+        - name: admin-certs
+          secret:
+            defaultMode: 420
+            secretName: es-admin-tls-secret
+        - emptyDir: {}
+          name: tmpspace
+        - emptyDir: {}
+          name: logspace
+        - emptyDir: {}
+          name: configdir
+    updateStrategy:
+      type: RollingUpdate
+    volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        creationTimestamp: null
+        name: v4m-search
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 30Gi
+        volumeMode: Filesystem
+      status:
+        phase: Pending
+  status:
+    availableReplicas: 3
+    collisionCount: 0
+    currentReplicas: 3
+    currentRevision: v4m-search-5bb6999c7
+    observedGeneration: 1
+    readyReplicas: 3
+    replicas: 3
+    updateRevision: v4m-search-5bb6999c7
+    updatedReplicas: 3
+kind: List
+metadata:
+  resourceVersion: ""
