@@ -1,0 +1,302 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    creationTimestamp: "2025-06-13T00:40:38Z"
+    generateName: nfs-subdir-external-provisioner-sas-5d8f85ffbf-
+    labels:
+      app: nfs-subdir-external-provisioner
+      pod-template-hash: 5d8f85ffbf
+      release: nfs-subdir-external-provisioner-sas
+    name: nfs-subdir-external-provisioner-sas-5d8f85ffbf-d6tjf
+    namespace: nfs-client
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: ReplicaSet
+      name: nfs-subdir-external-provisioner-sas-5d8f85ffbf
+      uid: d54e0898-b4d3-4cce-bc35-df549dbea411
+    resourceVersion: "74914980"
+    uid: 63b3e270-30be-4b57-9a1f-1d0376385fd1
+  spec:
+    containers:
+    - env:
+      - name: PROVISIONER_NAME
+        value: cluster.local/nfs-subdir-external-provisioner-sas
+      - name: NFS_SERVER
+        value: 10.73.111.100
+      - name: NFS_PATH
+        value: /d-210-sviya-app
+      image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+      imagePullPolicy: IfNotPresent
+      name: nfs-subdir-external-provisioner
+      resources: {}
+      securityContext: {}
+      terminationMessagePath: /dev/termination-log
+      terminationMessagePolicy: File
+      volumeMounts:
+      - mountPath: /persistentvolumes
+        name: nfs-subdir-external-provisioner-root
+      - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+        name: kube-api-access-xm7wt
+        readOnly: true
+    dnsPolicy: ClusterFirst
+    enableServiceLinks: true
+    nodeName: aks-dvmsssypto01-16550377-vmss00000c
+    preemptionPolicy: PreemptLowerPriority
+    priority: 0
+    restartPolicy: Always
+    schedulerName: default-scheduler
+    securityContext: {}
+    serviceAccount: nfs-subdir-external-provisioner-sas
+    serviceAccountName: nfs-subdir-external-provisioner-sas
+    terminationGracePeriodSeconds: 30
+    tolerations:
+    - effect: NoExecute
+      key: node.kubernetes.io/not-ready
+      operator: Exists
+      tolerationSeconds: 300
+    - effect: NoExecute
+      key: node.kubernetes.io/unreachable
+      operator: Exists
+      tolerationSeconds: 300
+    volumes:
+    - name: nfs-subdir-external-provisioner-root
+      nfs:
+        path: /d-210-sviya-app
+        server: 10.73.111.100
+    - name: kube-api-access-xm7wt
+      projected:
+        defaultMode: 420
+        sources:
+        - serviceAccountToken:
+            expirationSeconds: 3607
+            path: token
+        - configMap:
+            items:
+            - key: ca.crt
+              path: ca.crt
+            name: kube-root-ca.crt
+        - downwardAPI:
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+              path: namespace
+  status:
+    conditions:
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:56Z"
+      status: "True"
+      type: PodReadyToStartContainers
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:38Z"
+      status: "True"
+      type: Initialized
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-18T13:03:20Z"
+      status: "True"
+      type: Ready
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-18T13:03:20Z"
+      status: "True"
+      type: ContainersReady
+    - lastProbeTime: null
+      lastTransitionTime: "2025-06-13T00:40:38Z"
+      status: "True"
+      type: PodScheduled
+    containerStatuses:
+    - containerID: containerd://a24eb2916030e1641791b582ec531aa08dbed87fe99677e0b6bc4a244acf22d0
+      image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+      imageID: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner@sha256:63d5e04551ec8b5aae83b6f35938ca5ddc50a88d85492d9731810c31591fa4c9
+      lastState:
+        terminated:
+          containerID: containerd://145d8213396d60f15458fd10ca9e97a62d16e5882b4ec9eedce00c28c09772ae
+          exitCode: 255
+          finishedAt: "2025-06-18T13:03:18Z"
+          reason: Error
+          startedAt: "2025-06-13T00:40:55Z"
+      name: nfs-subdir-external-provisioner
+      ready: true
+      restartCount: 1
+      started: true
+      state:
+        running:
+          startedAt: "2025-06-18T13:03:19Z"
+    hostIP: 10.73.111.134
+    hostIPs:
+    - ip: 10.73.111.134
+    phase: Running
+    podIP: 10.244.1.25
+    podIPs:
+    - ip: 10.244.1.25
+    qosClass: BestEffort
+    startTime: "2025-06-13T00:40:38Z"
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: nfs-subdir-external-provisioner-sas
+      meta.helm.sh/release-namespace: nfs-client
+    creationTimestamp: "2025-04-08T14:33:46Z"
+    generation: 1
+    labels:
+      app: nfs-subdir-external-provisioner
+      app.kubernetes.io/managed-by: Helm
+      chart: nfs-subdir-external-provisioner-4.0.18
+      heritage: Helm
+      release: nfs-subdir-external-provisioner-sas
+    name: nfs-subdir-external-provisioner-sas
+    namespace: nfs-client
+    resourceVersion: "74914982"
+    uid: d9faa7e1-2aec-4eb4-8107-69a2226d2550
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: nfs-subdir-external-provisioner
+        release: nfs-subdir-external-provisioner-sas
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: nfs-subdir-external-provisioner
+          release: nfs-subdir-external-provisioner-sas
+      spec:
+        containers:
+        - env:
+          - name: PROVISIONER_NAME
+            value: cluster.local/nfs-subdir-external-provisioner-sas
+          - name: NFS_SERVER
+            value: 10.73.111.100
+          - name: NFS_PATH
+            value: /d-210-sviya-app
+          image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+          imagePullPolicy: IfNotPresent
+          name: nfs-subdir-external-provisioner
+          resources: {}
+          securityContext: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /persistentvolumes
+            name: nfs-subdir-external-provisioner-root
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: nfs-subdir-external-provisioner-sas
+        serviceAccountName: nfs-subdir-external-provisioner-sas
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: nfs-subdir-external-provisioner-root
+          nfs:
+            path: /d-210-sviya-app
+            server: 10.73.111.100
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2025-04-08T14:33:46Z"
+      lastUpdateTime: "2025-04-08T14:33:48Z"
+      message: ReplicaSet "nfs-subdir-external-provisioner-sas-5d8f85ffbf" has successfully
+        progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2025-06-18T13:03:20Z"
+      lastUpdateTime: "2025-06-18T13:03:20Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    annotations:
+      deployment.kubernetes.io/desired-replicas: "1"
+      deployment.kubernetes.io/max-replicas: "1"
+      deployment.kubernetes.io/revision: "1"
+      meta.helm.sh/release-name: nfs-subdir-external-provisioner-sas
+      meta.helm.sh/release-namespace: nfs-client
+    creationTimestamp: "2025-04-08T14:33:46Z"
+    generation: 1
+    labels:
+      app: nfs-subdir-external-provisioner
+      pod-template-hash: 5d8f85ffbf
+      release: nfs-subdir-external-provisioner-sas
+    name: nfs-subdir-external-provisioner-sas-5d8f85ffbf
+    namespace: nfs-client
+    ownerReferences:
+    - apiVersion: apps/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: Deployment
+      name: nfs-subdir-external-provisioner-sas
+      uid: d9faa7e1-2aec-4eb4-8107-69a2226d2550
+    resourceVersion: "74914981"
+    uid: d54e0898-b4d3-4cce-bc35-df549dbea411
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: nfs-subdir-external-provisioner
+        pod-template-hash: 5d8f85ffbf
+        release: nfs-subdir-external-provisioner-sas
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: nfs-subdir-external-provisioner
+          pod-template-hash: 5d8f85ffbf
+          release: nfs-subdir-external-provisioner-sas
+      spec:
+        containers:
+        - env:
+          - name: PROVISIONER_NAME
+            value: cluster.local/nfs-subdir-external-provisioner-sas
+          - name: NFS_SERVER
+            value: 10.73.111.100
+          - name: NFS_PATH
+            value: /d-210-sviya-app
+          image: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner:v4.0.2
+          imagePullPolicy: IfNotPresent
+          name: nfs-subdir-external-provisioner
+          resources: {}
+          securityContext: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /persistentvolumes
+            name: nfs-subdir-external-provisioner-root
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: nfs-subdir-external-provisioner-sas
+        serviceAccountName: nfs-subdir-external-provisioner-sas
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: nfs-subdir-external-provisioner-root
+          nfs:
+            path: /d-210-sviya-app
+            server: 10.73.111.100
+  status:
+    availableReplicas: 1
+    fullyLabeledReplicas: 1
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+kind: List
+metadata:
+  resourceVersion: ""
